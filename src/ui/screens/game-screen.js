@@ -17,8 +17,9 @@ const DRAW_GUARD_MS = 300;
  *
  * @param {HTMLElement} root
  * @param {Store} store
+ * @param {{ onOpenSettings?: () => void }} [deps]
  */
-export function mountGameScreen(root, store) {
+export function mountGameScreen(root, store, { onOpenSettings } = {}) {
   const lastBall = createLastBall();
   const history = createHistory();
   const boardTitle = h('h2', { class: 'section-title', id: 'board-title' });
@@ -26,6 +27,11 @@ export function mountGameScreen(root, store) {
 
   // --- Barra superior ---
   const counter = h('p', { class: 'counter' });
+  const settingsBtn = h('button', {
+    type: 'button',
+    class: 'btn btn-icon',
+    onclick: () => onOpenSettings?.(),
+  }, '⚙');
   const menuBtn = h('button', {
     type: 'button',
     class: 'btn btn-icon',
@@ -36,6 +42,7 @@ export function mountGameScreen(root, store) {
   const topbar = h('header', { class: 'topbar' },
     h('h1', { id: 'game-title', class: 'visually-hidden' }),
     counter,
+    settingsBtn,
     menuBtn,
   );
 
@@ -159,6 +166,7 @@ export function mountGameScreen(root, store) {
     // Textos (se repintan al cambiar de idioma)
     root.querySelector('#game-title').textContent = t('app.title');
     menuBtn.setAttribute('aria-label', t('game.menu'));
+    settingsBtn.setAttribute('aria-label', t('settings.title'));
     boardTitle.textContent = t('board.title');
     drawBtn.textContent = t('game.draw');
     undoBtn.textContent = t('game.undo');

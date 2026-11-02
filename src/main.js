@@ -1,27 +1,72 @@
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/game.css';
+import './styles/settings.css';
 
 import { createGame, restoreForResume } from './core/game.js';
 import { applyTranslations, detectLang, setLang } from './i18n/index.js';
 import { confirm } from './ui/dialog.js';
-import { showNotice } from './ui/notices.js';
-import { loadGame, saveGame } from './ui/persistence.js';
-import { initRouter } from './ui/router.js';
+import { retranslateNotices, showNotice } from './ui/notices.js';
+import { loadGame, loadPrefs, saveGame, savePrefs } from './ui/persistence.js';
+import { closeView, currentView, initRouter, onViewChange, showView } from './ui/router.js';
 import { createStore } from './ui/store.js';
 import { initSwUpdate } from './ui/sw-update.js';
+import { applyTheme } from './ui/theme.js';
+import { createWakeLock } from './ui/wake-lock.js';
 import { mountGameScreen } from './ui/screens/game-screen.js';
+import { mountSettingsScreen } from './ui/screens/settings-screen.js';
 
 /** @typedef {import('./ui/store.js').Store} Store */
 /** @typedef {import('./core/game.js').Game} Game */
+/** @typedef {import('./core/storage.js').Preferences} Preferences */
+
+/** @type {Preferences} */
+let prefs;
+
+/** @param {Partial<Preferences>} patch */
+function updatePrefs(patch) {
+  prefs = { ...prefs, ...patch };
+  savePrefs(prefs);
+}
+
+/** @param {string} id */
+const view = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
 
 /**
  * Monta las pantallas de la app. Cada historia de usuario añade aquí su pantalla.
  * @param {Store} store
  */
 export function mountScreens(store) {
-  const game = mountGameScreen(/** @type {HTMLElement} */ (document.getElementById('view-game')), store);
-  return { game };
+  const game = mountGameScreen(view('view-game'), store, {
+    onOpenSettings: () => showView('settings'),
+  });
+
+  const settings = mountSettingsScreen(view('view-settings'), {
+    getPrefs: () => prefs,
+    onBack: closeView,
+    onChange(patch) {
+      updatePrefs(patch);
+      if (patch.lang) {
+        setLang(prefs.lang);
+        applyTranslations(document);
+        renderAll();
+      }
+      if (patch.theme) applyTheme(prefs.theme);
+      settings.render();
+    },
+  });
+
+  const screens = { game, settings };
+  function renderAll() {
+    for (const s of Object.values(screens)) s.render();
+    retranslateNotices();
+  }
+  // Ajustes muestra estados que cambian (p. ej. modo offline listo): se repinta al abrirse.
+  onViewChange((v) => {
+    if (v === 'settings') settings.render();
+  });
+  navigator.serviceWorker?.addEventListener('controllerchange', () => settings.render());
+  return screens;
 }
 
 /**
@@ -75,7 +120,9 @@ async function restoreSavedGame(store) {
 }
 
 function main() {
-  setLang(detectLang(navigator.languages));
+  prefs = loadPrefs(detectLang(navigator.languages));
+  setLang(prefs.lang);
+  applyTheme(prefs.theme);
   applyTranslations(document);
 
   // La partida guardada no se sobrescribe hasta que el cantador decide (continuar o descartar).
@@ -83,12 +130,25 @@ function main() {
 
   mountScreens(store);
   initRouter();
-  initSwUpdate({
-    isGameInProgress: () => {
-      const g = store.getState();
-      return g.status === 'in-progress' && g.drawn.length > 0;
+
+  const isGameInProgress = () => {
+    const g = store.getState();
+    return g.status === 'in-progress' && g.drawn.length > 0;
+  };
+
+  // Pantalla encendida mientras hay partida en curso y se ve la partida (FR-025).
+  const wakeLock = createWakeLock({
+    shouldHold: () => isGameInProgress() && currentView() === 'game',
+    onUnavailable() {
+      if (prefs.wakeLockNoticeShown) return;
+      updatePrefs({ wakeLockNoticeShown: true });
+      showNotice('notice.wakeLockUnsupported', { persistent: true });
     },
   });
+  store.subscribe(() => wakeLock.sync());
+  onViewChange(() => wakeLock.sync());
+
+  initSwUpdate({ isGameInProgress });
   restoreSavedGame(store);
 }
 

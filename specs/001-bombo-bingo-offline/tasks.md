@@ -179,12 +179,12 @@ reiniciar, jugar una partida completa en gallego y modo oscuro sin que se apague
 
 ### Implementation for User Story 6
 
-- [ ] T058 [P] [US6] Implement wake lock module: `acquire()` with `navigator.wakeLock.request('screen')` while a game is in progress and the game view is visible; re-acquire on `visibilitychange` → `visible`; `release()` when the game finishes; if unsupported or rejected show `notice.wakeLockUnsupported` once (persist `wakeLockNoticeShown` in prefs) and continue in `src/ui/wake-lock.js`
-- [ ] T059 [P] [US6] Implement theme module: `applyTheme('system' | 'light' | 'dark')` sets/removes `data-theme` on `<html>` and updates `<meta name="theme-color">` from computed tokens; listen to `prefers-color-scheme` changes when `system` in `src/ui/theme.js`
-- [ ] T060 [US6] Create settings screen `mountSettingsScreen(root, { prefs, onChange })`: language (Español / Galego) and theme (Sistema / Claro / Oscuro) as radio groups, app version and offline status ("Lista para usar sin conexión"); back button returns to game in `src/ui/screens/settings-screen.js`
-- [ ] T061 [P] [US6] Create settings styles (radio groups as large tappable rows ≥ `var(--tap-min)`) in `src/styles/settings.css`
-- [ ] T062 [US6] Wire prefs in `src/main.js`: `loadPrefs(detectLang(navigator.languages))` at startup → `setLang`, `applyTheme`; settings changes → `savePrefs`, `setLang` + `applyTranslations(document)`, `applyTheme`; add settings button to game screen top bar; initialize `wake-lock`
-- [ ] T063 [P] [US6] Add US6 strings (`settings.title`, `settings.language`, `settings.theme`, `settings.themeSystem`, `settings.themeLight`, `settings.themeDark`, `settings.version`, `settings.offlineReady`, `notice.wakeLockUnsupported`) to `src/i18n/es.js` and `src/i18n/gl.js`
+- [x] T058 [P] [US6] Implement wake lock module: `acquire()` with `navigator.wakeLock.request('screen')` while a game is in progress and the game view is visible; re-acquire on `visibilitychange` → `visible`; `release()` when the game finishes; if unsupported or rejected show `notice.wakeLockUnsupported` once (persist `wakeLockNoticeShown` in prefs) and continue in `src/ui/wake-lock.js`
+- [x] T059 [P] [US6] Implement theme module: `applyTheme('system' | 'light' | 'dark')` sets/removes `data-theme` on `<html>` and updates `<meta name="theme-color">` from computed tokens; listen to `prefers-color-scheme` changes when `system` in `src/ui/theme.js`
+- [x] T060 [US6] Create settings screen `mountSettingsScreen(root, { prefs, onChange })`: language (Español / Galego) and theme (Sistema / Claro / Oscuro) as radio groups, app version and offline status ("Lista para usar sin conexión"); back button returns to game in `src/ui/screens/settings-screen.js`
+- [x] T061 [P] [US6] Create settings styles (radio groups as large tappable rows ≥ `var(--tap-min)`) in `src/styles/settings.css`
+- [x] T062 [US6] Wire prefs in `src/main.js`: `loadPrefs(detectLang(navigator.languages))` at startup → `setLang`, `applyTheme`; settings changes → `savePrefs`, `setLang` + `applyTranslations(document)`, `applyTheme`; add settings button to game screen top bar; initialize `wake-lock`
+- [x] T063 [P] [US6] Add US6 strings (`settings.title`, `settings.language`, `settings.theme`, `settings.themeSystem`, `settings.themeLight`, `settings.themeDark`, `settings.version`, `settings.offlineReady`, `notice.wakeLockUnsupported`) to `src/i18n/es.js` and `src/i18n/gl.js`
 
 **Checkpoint**: P1 completo. Validar quickstart escenarios 1-5 y 8-11 en un móvil real.
 

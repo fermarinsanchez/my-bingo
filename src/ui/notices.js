@@ -23,6 +23,17 @@ export function configureNotices(impl) {
 }
 
 /**
+ * Coloca los avisos justo encima de la barra de acciones de la vista visible.
+ * @param {HTMLElement} region
+ */
+function placeAboveActionbar(region) {
+  const bar = document.querySelector('.view:not([hidden]) .actionbar:not([hidden])');
+  const offset = bar ? bar.getBoundingClientRect().height + 8 : null;
+  if (offset) region.style.setProperty('--notices-bottom', `${offset}px`);
+  else region.style.removeProperty('--notices-bottom');
+}
+
+/**
  * Muestra un aviso no bloqueante en #notices.
  *
  * @param {string} key Clave i18n del texto.
@@ -42,6 +53,8 @@ export function showNotice(key, { once, params, persistent = false, action } = {
   const el = document.createElement('div');
   el.className = 'notice';
   const text = document.createElement('p');
+  text.dataset.noticeKey = key;
+  text.dataset.noticeParams = JSON.stringify(params ?? {});
   text.textContent = t(key, params);
   el.append(text);
 
@@ -49,6 +62,8 @@ export function showNotice(key, { once, params, persistent = false, action } = {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'btn';
+    btn.dataset.noticeKey = action.labelKey;
+    btn.dataset.noticeParams = '{}';
     btn.textContent = t(action.labelKey);
     btn.addEventListener('click', () => {
       el.remove();
@@ -65,7 +80,19 @@ export function showNotice(key, { once, params, persistent = false, action } = {
   close.addEventListener('click', () => el.remove());
   el.append(close);
 
+  placeAboveActionbar(region);
   region.append(el);
   if (!persistent && !action) setTimeout(() => el.remove(), AUTO_DISMISS_MS);
   return el;
+}
+
+/** Vuelve a traducir los avisos visibles (al cambiar de idioma). */
+export function retranslateNotices() {
+  for (const el of document.querySelectorAll('#notices [data-notice-key]')) {
+    const node = /** @type {HTMLElement} */ (el);
+    node.textContent = t(/** @type {string} */ (node.dataset.noticeKey), JSON.parse(node.dataset.noticeParams ?? '{}'));
+  }
+  for (const btn of document.querySelectorAll('#notices .btn-icon')) {
+    btn.setAttribute('aria-label', t('common.close'));
+  }
 }

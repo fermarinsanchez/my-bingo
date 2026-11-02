@@ -185,10 +185,12 @@ dialog p {
 }
 
 /* Avisos no bloqueantes */
+/* Encima de la barra de acciones: no tapan la barra superior ni los botones principales.
+   notices.js ajusta --notices-bottom a la altura de la barra de la vista visible. */
 .notices {
   position: fixed;
   left: 50%;
-  top: calc(var(--space-3) + env(safe-area-inset-top));
+  bottom: var(--notices-bottom, calc(var(--space-3) + env(safe-area-inset-bottom)));
   z-index: 10;
   display: flex;
   flex-direction: column;
