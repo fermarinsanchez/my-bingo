@@ -1,0 +1,317 @@
+/* Pantalla de partida */
+.counter {
+  flex: 1;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.game-content {
+  align-items: stretch;
+}
+
+/* Última bola: elemento dominante (FR-003, SC-003) */
+.last-ball-wrap {
+  display: flex;
+  justify-content: center;
+  padding-block: var(--space-2);
+}
+
+.last-ball {
+  display: grid;
+  place-items: center;
+  width: min(84vw, 46vh, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  box-shadow: var(--shadow);
+  container-type: inline-size;
+}
+
+/* La cifra escala con la bola: dos dígitos siempre caben dentro del círculo interior. */
+.last-ball__number {
+  display: grid;
+  place-items: center;
+  width: 82%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 44cqi;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.last-ball--empty .last-ball__number {
+  color: var(--muted);
+}
+
+.last-ball--pop {
+  animation: ball-pop 220ms ease-out;
+}
+
+@keyframes ball-pop {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.game-message {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-weight: 600;
+}
+
+.game-message[hidden] {
+  display: none;
+}
+
+/* Barra inferior: botón principal a ancho completo; secundarios repartidos */
+/* Secundarios: reparten la fila y pasan a otra línea si no caben (nunca recortan el texto). */
+.actionbar > .btn:not(.btn-block) {
+  flex: 1 1 6.5rem;
+  padding-inline: var(--space-2);
+}
+
+/* Menú tipo hoja */
+.menu-sheet {
+  margin-bottom: 0;
+  margin-top: auto;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.menu-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Secciones */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.section-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+
+.section-head .section-title {
+  margin-bottom: 0;
+}
+
+/* Historial (FR-011) */
+.history__chips {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: grid;
+  place-items: center;
+  min-width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0 var(--space-2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.chip--latest {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.history__empty {
+  color: var(--muted);
+}
+
+.history__empty[hidden],
+.history__chips[hidden] {
+  display: none;
+}
+
+.sequence {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: var(--space-1) var(--space-3);
+  margin: 0 0 var(--space-5);
+  padding-left: 1.75rem;
+  max-height: 55dvh;
+  overflow-y: auto;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.sequence li::marker {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+/* Tablero 1-90 (FR-010) */
+.board {
+  display: grid;
+  /* 10 columnas que reparten el ancho: nunca desbordan en pantallas de 320 px. */
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.board__cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+.board__cell--marked {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 800;
+}
+
+/* Marca de esquina: distingue las salidas también sin color */
+.board__cell--marked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid currentColor;
+  border-left: 7px solid transparent;
+}
+
+.board__cell--highlighted {
+  outline: 3px solid var(--danger);
+  outline-offset: -3px;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.board--interactive .board__cell {
+  /* Cuadrícula de comprobación: 48 px de alto; el ancho lo dan las 10 columnas
+     (≈ 30 px en 360 px, por encima del mínimo WCAG 2.2 AA de 24 × 24 px). */
+  aspect-ratio: auto;
+  min-height: var(--tap-min);
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+
+/* Sorteo automático */
+.auto-status {
+  flex: 1 1 100%;
+  text-align: center;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.auto-status[hidden],
+.actionbar .btn[hidden] {
+  display: none;
+}
+
+.btn-auto-running {
+  border-color: var(--primary);
+  border-width: 3px;
+}
+
+/* Horizontal (T082): bola a la izquierda; historial y tablero a la derecha. */
+@media (orientation: landscape) and (max-height: 600px) {
+  #view-game {
+    max-width: 1100px;
+  }
+
+  .game-content {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-areas:
+      'prizes prizes'
+      'ball history'
+      'ball board'
+      'msg board';
+    align-items: start;
+    column-gap: var(--space-5);
+  }
+
+  .prizes {
+    grid-area: prizes;
+  }
+
+  .last-ball-wrap {
+    grid-area: ball;
+  }
+
+  .last-ball {
+    width: min(34vw, 54vh);
+  }
+
+  .game-message {
+    grid-area: msg;
+  }
+
+  .history {
+    grid-area: history;
+  }
+
+  .board-section {
+    grid-area: board;
+  }
+
+  .board__cell {
+    aspect-ratio: auto;
+    min-height: 28px;
+  }
+
+  #view-game .actionbar {
+    flex-wrap: nowrap;
+  }
+
+  #view-game .actionbar > .btn-block {
+    flex: 2 1 0;
+    width: auto;
+  }
+
+  .btn-primary {
+    min-height: var(--tap-min);
+  }
+
+  .auto-status {
+    flex: 0 1 auto;
+    align-self: center;
+  }
+}

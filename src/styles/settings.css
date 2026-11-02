@@ -1,0 +1,85 @@
+/* Pantalla de Ajustes */
+.settings-content {
+  gap: var(--space-5);
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.option-group legend {
+  margin-bottom: var(--space-2);
+  padding: 0;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+/* Filas grandes y fáciles de tocar (≥ 48 px) */
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--fs-lg);
+  cursor: pointer;
+}
+
+.option-row:has(input:checked) {
+  border-color: var(--primary);
+  border-width: 3px;
+  font-weight: 700;
+}
+
+.option-row input {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.settings-info {
+  color: var(--muted);
+}
+
+/* Intervalo del sorteo automático */
+.interval {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.interval[hidden] {
+  display: none;
+}
+
+.interval__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.interval__label {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.interval__value {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.interval input[type='range'] {
+  width: 100%;
+  min-height: var(--tap-min);
+  margin: 0;
+  accent-color: var(--primary);
+}

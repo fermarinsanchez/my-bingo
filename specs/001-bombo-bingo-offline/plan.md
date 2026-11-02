@@ -55,7 +55,7 @@ idioma, estado < 2 KB.
 | I. Offline-First Total | Precache de todos los assets (R4); sin CDN ni fuentes externas (R9); sin backend; manifest instalable; SW con actualización diferida, nunca recarga en partida. | ✅ |
 | II. Alcance acotado | Solo bombo 90 bolas: sorteo manual/automático, tablero + historial, recuperación, comprobación. Deshacer y registro de premios son aclaraciones de la spec dentro de la funcionalidad del bombo; sin cartones, voz ni multijugador. | ✅ |
 | III. Integridad y persistencia | `crypto.getRandomValues` + rechazo (R2); guardado síncrono tras cada acción y antes de mostrar la bola (R3); confirmaciones en acciones destructivas; comprobación pausa el automático; `schemaVersion` + `migrate()`. | ✅ |
-| IV. Legibilidad y accesibilidad | Bola a `min(45vw, 32vh)`; controles en zona inferior ≥ 48 px; AA en ambos temas; tema sistema/claro/oscuro; Wake Lock con aviso; es/gl con test de paridad. | ✅ |
+| IV. Legibilidad y accesibilidad | Bola a `min(84vw, 46vh)` con cifra escalada a la bola (R9); controles en zona inferior ≥ 48 px; AA en ambos temas; tema sistema/claro/oscuro; Wake Lock con aviso; es/gl con test de paridad. | ✅ |
 | V. Simplicidad y web estándar | Vanilla JS + Vite + vite-plugin-pwa; sin framework; núcleo puro separado del DOM; `<dialog>` nativo; sin librerías de i18n. | ✅ |
 | VI. Tests en lógica clave | Vitest sobre sorteo, estado, persistencia (serialización) y comprobación; umbral de cobertura en CI; prueba manual en modo avión. | ✅ |
 | Restricciones técnicas | GitHub Pages con `BASE_PATH`; `localStorage`; presupuesto 100 KB verificado en CI; Lighthouse Accesibilidad ≥ 90 en CI; instalabilidad verificada en DevTools y escenario 1 de [quickstart.md](./quickstart.md) (constitución v1.1.0). | ✅ |
@@ -117,6 +117,9 @@ src/
 │   ├── theme.js              # data-theme + meta theme-color
 │   ├── sw-update.js          # registro SW (virtual:pwa-register), aviso de actualización
 │   ├── dialog.js             # confirmaciones con <dialog>
+│   ├── dom.js                # helper h() para crear elementos (añadido en implementación)
+│   ├── icons.js              # iconos SVG en línea (sustituyen símbolos de texto; ver nota)
+│   ├── router.js             # vistas + botón "atrás" del sistema
 │   ├── notices.js            # avisos no bloqueantes "una vez"
 │   ├── screens/
 │   │   ├── game-screen.js
@@ -146,6 +149,10 @@ tests/
     ├── ci.yml                # PR: npm ci, lint, test:coverage, build, check-size, lhci
     └── deploy.yml            # push a main: build + deploy-pages
 ```
+
+**Nota de implementación (iconos)**: los símbolos de texto (⚙ ⋮ ✕ ← ⌫) obligaban a cargar una
+fuente de reserva en la primera maquetación (TBT 450 ms en Lighthouse móvil). Con iconos SVG en
+línea el rendimiento pasa de 88 a 96-99 y la interactividad queda en 1,5-1,8 s.
 
 **Structure Decision**: proyecto único de frontend estático en la raíz. `src/core/` concentra
 la lógica pura testeada (principio V y VI); `src/ui/` contiene todo lo que toca DOM, timers,

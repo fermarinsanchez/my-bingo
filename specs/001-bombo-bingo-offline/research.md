@@ -103,9 +103,11 @@ resuelven los detalles.
 ## R9. Tipografía y tamaño de la última bola
 
 - **Decisión**: fuentes del sistema (`system-ui`), cifras tabulares
-  (`font-variant-numeric: tabular-nums`). La última bola se dimensiona con
-  `font-size: min(45vw, 32vh)` para ocupar la parte principal de la pantalla en vertical (SC-003:
-  legible a 3 m ≈ cifras de > 4 cm de alto en un móvil de 6").
+  (`font-variant-numeric: tabular-nums`). La bola ocupa `min(84vw, 46vh)` y la cifra escala con
+  ella mediante unidades de contenedor (`font-size: 44cqi`), de modo que dos dígitos siempre
+  caben en el círculo interior (SC-003: regla práctica altura de letra ≈ distancia / 200, es
+  decir, ≈ 1,5 cm a 3 m; se obtienen ≈ 1,5-2 cm en un móvil de 6").
+  *Ajustado en implementación*: la fórmula inicial `min(45vw, 32vh)` desbordaba el círculo.
 - **Justificación**: sin descarga de fuentes (offline y presupuesto de tamaño).
 - **Alternativas**: fuente web incrustada (+20-40 KB sin beneficio claro).
 
