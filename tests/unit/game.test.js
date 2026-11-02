@@ -10,6 +10,7 @@ import {
   canDraw,
   undoLastBall,
   canUndo,
+  restoreForResume,
 } from '../../src/core/game.js';
 import { GameError } from '../../src/core/errors.js';
 
@@ -197,5 +198,14 @@ describe('undoLastBall / canUndo (FR-006a, FR-021c)', () => {
     const prize = { type: 'line', numbers: [1, 2, 3, 4, 5], completionPosition: 5, awardedAtPosition: 5 };
     expect(canUndo(withDrawn([1, 2, 3, 4, 5], { prizes: [prize] }))).toBe(false);
     expect(canUndo(withDrawn([1, 2, 3, 4, 5, 6], { prizes: [prize] }))).toBe(true);
+  });
+});
+
+describe('restoreForResume (FR-013)', () => {
+  it('pone el automático en pausa y conserva modo e intervalo', () => {
+    const g = withDrawn([4, 8], { mode: 'auto', intervalSec: 12, autoPaused: false });
+    const r = restoreForResume(g);
+    expect(r).toEqual({ ...g, autoPaused: true });
+    expect(g.autoPaused).toBe(false);
   });
 });

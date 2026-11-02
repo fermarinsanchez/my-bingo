@@ -124,6 +124,15 @@ export function undoLastBall(game) {
 }
 
 /**
+ * Al recuperar una partida tras un cierre, el automático vuelve siempre en pausa (FR-013).
+ * @param {Game} game
+ * @returns {Game}
+ */
+export function restoreForResume(game) {
+  return { ...game, autoPaused: true };
+}
+
+/**
  * @param {Game} game
  * @returns {Game}
  */

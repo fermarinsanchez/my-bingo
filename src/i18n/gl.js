@@ -30,4 +30,10 @@ export default {
   'board.title': 'Taboleiro',
   'board.cellDrawn': '{n}, saído',
   'board.cellPending': '{n}, pendente',
+  'resume.title': 'Continuar a partida?',
+  'resume.message': 'Hai unha partida con {n} bólas. Queres continuala?',
+  'resume.continue': 'Continuar',
+  'resume.discard': 'Descartar',
+  'notice.storageUnavailable': 'Este navegador non permite gardar: se se pecha a app, a partida non se poderá recuperar.',
+  'notice.gameCorrupt': 'Non se puido recuperar a partida gardada. Comeza unha nova.',
 };

@@ -30,4 +30,10 @@ export default {
   'board.title': 'Tablero',
   'board.cellDrawn': '{n}, salido',
   'board.cellPending': '{n}, pendiente',
+  'resume.title': '¿Continuar la partida?',
+  'resume.message': 'Hay una partida con {n} bolas. ¿Quieres continuarla?',
+  'resume.continue': 'Continuar',
+  'resume.discard': 'Descartar',
+  'notice.storageUnavailable': 'Este navegador no permite guardar: si se cierra la app, la partida no se podrá recuperar.',
+  'notice.gameCorrupt': 'No se ha podido recuperar la partida guardada. Empieza una nueva.',
 };
