@@ -93,6 +93,37 @@ export function drawBall(game, randomInt = rngRandomInt) {
 }
 
 /**
+ * Se puede deshacer la última bola si (data-model.md › Game › canUndo): hay bolas, no se acaba
+ * de deshacer, el automático no está en marcha, no se concedió un premio con esa bola y la
+ * partida está en curso.
+ * @param {Game} game
+ */
+export function canUndo(game) {
+  const n = game.drawn.length;
+  return (
+    n > 0 &&
+    !game.undoLocked &&
+    !(game.mode === 'auto' && !game.autoPaused) &&
+    !game.prizes.some((p) => p.awardedAtPosition === n) &&
+    game.status === 'in-progress'
+  );
+}
+
+/**
+ * Deshace la última bola (FR-006a): vuelve a pendiente y bloquea un segundo deshacer.
+ * @param {Game} game
+ * @returns {{ game: Game, ball: number }}
+ */
+export function undoLastBall(game) {
+  if (!canUndo(game)) throw new GameError('undo-not-allowed');
+  const ball = /** @type {number} */ (game.drawn.at(-1));
+  return {
+    game: { ...game, drawn: game.drawn.slice(0, -1), undoLocked: true },
+    ball,
+  };
+}
+
+/**
  * @param {Game} game
  * @returns {Game}
  */

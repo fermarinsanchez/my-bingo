@@ -8,6 +8,8 @@ import {
   getPending,
   getLastBalls,
   canDraw,
+  undoLastBall,
+  canUndo,
 } from '../../src/core/game.js';
 import { GameError } from '../../src/core/errors.js';
 
@@ -145,5 +147,55 @@ describe('derivados', () => {
     const g = finishGame({ ...createGame(), mode: 'auto', autoPaused: false });
     expect(g.status).toBe('finished');
     expect(g.autoPaused).toBe(true);
+  });
+});
+
+describe('undoLastBall / canUndo (FR-006a, FR-021c)', () => {
+  it('quita la última bola, la devuelve y bloquea deshacer', () => {
+    const g = withDrawn([12, 45, 7]);
+    const { game, ball } = undoLastBall(g);
+    expect(ball).toBe(7);
+    expect(game.drawn).toEqual([12, 45]);
+    expect(game.undoLocked).toBe(true);
+    expect(g.drawn).toEqual([12, 45, 7]);
+  });
+
+  it('la bola deshecha vuelve a estar pendiente', () => {
+    const { game } = undoLastBall(withDrawn([12, 45, 7]));
+    expect(getPending(game)).toContain(7);
+  });
+
+  it('no se puede deshacer dos veces seguidas', () => {
+    const { game } = undoLastBall(withDrawn([12, 45, 7]));
+    expect(canUndo(game)).toBe(false);
+    expect(() => undoLastBall(game)).toThrow(expect.objectContaining({ code: 'undo-not-allowed' }));
+  });
+
+  it('tras sacar una bola nueva se puede volver a deshacer', () => {
+    const { game } = undoLastBall(withDrawn([12, 45, 7]));
+    const next = drawBall(game, first).game;
+    expect(canUndo(next)).toBe(true);
+    expect(undoLastBall(next).game.drawn).toEqual([12, 45]);
+  });
+
+  it('no se puede deshacer en una partida sin bolas', () => {
+    const g = createGame();
+    expect(canUndo(g)).toBe(false);
+    expect(() => undoLastBall(g)).toThrow(expect.objectContaining({ code: 'undo-not-allowed' }));
+  });
+
+  it('no se puede deshacer con el automático en marcha', () => {
+    expect(canUndo(withDrawn([3], { mode: 'auto', autoPaused: false }))).toBe(false);
+    expect(canUndo(withDrawn([3], { mode: 'auto', autoPaused: true }))).toBe(true);
+  });
+
+  it('no se puede deshacer en una partida terminada', () => {
+    expect(canUndo(finishGame(withDrawn([3])))).toBe(false);
+  });
+
+  it('no se puede deshacer la bola con la que se concedió un premio', () => {
+    const prize = { type: 'line', numbers: [1, 2, 3, 4, 5], completionPosition: 5, awardedAtPosition: 5 };
+    expect(canUndo(withDrawn([1, 2, 3, 4, 5], { prizes: [prize] }))).toBe(false);
+    expect(canUndo(withDrawn([1, 2, 3, 4, 5, 6], { prizes: [prize] }))).toBe(true);
   });
 });
