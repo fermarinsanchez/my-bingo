@@ -230,15 +230,15 @@ comprobación o cambiar de app → se pausa (quickstart escenario 7).
 
 ### Tests for User Story 5 (escribir primero) ⚠️
 
-- [ ] T075 [US5] Add unit tests in `tests/unit/game.test.js`: `setMode(game, 'auto')` sets `autoPaused = false`, `setMode(game, 'manual')` sets `autoPaused = true`; `setIntervalSec` accepts 3 and 30, throws `GameError('invalid-interval')` for 2, 31, 4.5; `pauseAuto`/`resumeAuto` toggle `autoPaused` only in auto mode; `resumeAuto` with no balls left throws `GameError('no-balls-left')`
+- [x] T075 [US5] Add unit tests in `tests/unit/game.test.js`: `setMode(game, 'auto')` sets `autoPaused = false`, `setMode(game, 'manual')` sets `autoPaused = true`; `setIntervalSec` accepts 3 and 30, throws `GameError('invalid-interval')` for 2, 31, 4.5; `pauseAuto`/`resumeAuto` toggle `autoPaused` only in auto mode; `resumeAuto` with no balls left throws `GameError('no-balls-left')`
 
 ### Implementation for User Story 5
 
-- [ ] T076 [US5] Implement `setMode`, `setIntervalSec`, `pauseAuto`, `resumeAuto` in `src/core/game.js` — make T075 pass
-- [ ] T077 [US5] Implement auto-draw controller `createAutoDraw(store)`: chained `setTimeout` every `intervalSec` while `mode = 'auto'` ∧ ¬`autoPaused` ∧ `canDraw`; exposes `secondsToNext` for a countdown; dispatches `pauseAuto` on `visibilitychange` → `hidden`, when the check or settings view opens, when a confirm dialog opens, and when no balls are left in `src/ui/auto-draw.js`
-- [ ] T078 [US5] Add auto controls to the game bottom bar: "Automático" start, "Pausa" / "Reanudar", "Manual"; show interval and countdown; disable "Sacar bola" and "Deshacer" while auto is running in `src/ui/screens/game-screen.js`
-- [ ] T079 [US5] Add interval control (range 3-30 step 1 + numeric value, default 5) to settings, dispatching `setIntervalSec` in `src/ui/screens/settings-screen.js`
-- [ ] T080 [P] [US5] Add US5 strings (`auto.start`, `auto.pause`, `auto.resume`, `auto.manual`, `auto.next` "Próxima bola en {s} s", `auto.interval` "Cada {s} s", `settings.interval`) to `src/i18n/es.js` and `src/i18n/gl.js`
+- [x] T076 [US5] Implement `setMode`, `setIntervalSec`, `pauseAuto`, `resumeAuto` in `src/core/game.js` — make T075 pass
+- [x] T077 [US5] Implement auto-draw controller `createAutoDraw(store)`: chained `setTimeout` every `intervalSec` while `mode = 'auto'` ∧ ¬`autoPaused` ∧ `canDraw`; exposes `secondsToNext` for a countdown; dispatches `pauseAuto` on `visibilitychange` → `hidden`, when the check or settings view opens, when a confirm dialog opens, and when no balls are left in `src/ui/auto-draw.js`
+- [x] T078 [US5] Add auto controls to the game bottom bar: "Automático" start, "Pausa" / "Reanudar", "Manual"; show interval and countdown; disable "Sacar bola" and "Deshacer" while auto is running in `src/ui/screens/game-screen.js`
+- [x] T079 [US5] Add interval control (range 3-30 step 1 + numeric value, default 5) to settings, dispatching `setIntervalSec` in `src/ui/screens/settings-screen.js`
+- [x] T080 [P] [US5] Add US5 strings (`auto.start`, `auto.pause`, `auto.resume`, `auto.manual`, `auto.next` "Próxima bola en {s} s", `auto.interval` "Cada {s} s", `settings.interval`) to `src/i18n/es.js` and `src/i18n/gl.js`
 
 **Checkpoint**: todas las historias funcionan de forma independiente y conjunta.
 

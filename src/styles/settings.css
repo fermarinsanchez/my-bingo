@@ -49,3 +49,37 @@
 .settings-info {
   color: var(--muted);
 }
+
+/* Intervalo del sorteo automático */
+.interval {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.interval[hidden] {
+  display: none;
+}
+
+.interval__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.interval__label {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.interval__value {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.interval input[type='range'] {
+  width: 100%;
+  min-height: var(--tap-min);
+  margin: 0;
+  accent-color: var(--primary);
+}

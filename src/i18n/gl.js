@@ -81,4 +81,12 @@ export default {
   'prizes.bingo': 'Bingo · bóla {pos}',
   'prizes.afterBingo': 'Bingo concedido! Rematamos a partida?',
   'prizes.keepPlaying': 'Seguir xogando',
+  'auto.start': 'Automático',
+  'auto.pause': 'Pausa',
+  'auto.resume': 'Continuar',
+  'auto.manual': 'Manual',
+  'auto.next': 'Próxima bóla en {s} s',
+  'auto.interval': 'Cada {s} s',
+  'auto.paused': 'En pausa',
+  'settings.interval': 'Intervalo do sorteo automático',
 };

@@ -225,3 +225,21 @@
   font-size: var(--fs-md);
   color: var(--text);
 }
+
+/* Sorteo automático */
+.auto-status {
+  flex: 1 1 100%;
+  text-align: center;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.auto-status[hidden],
+.actionbar .btn[hidden] {
+  display: none;
+}
+
+.btn-auto-running {
+  border-color: var(--primary);
+  border-width: 3px;
+}

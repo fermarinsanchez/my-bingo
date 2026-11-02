@@ -1,4 +1,14 @@
-import { canDraw, canUndo, createGame, drawBall, finishGame, undoLastBall } from '../../core/game.js';
+import {
+  canDraw,
+  canUndo,
+  createGame,
+  drawBall,
+  finishGame,
+  pauseAuto,
+  resumeAuto,
+  setMode,
+  undoLastBall,
+} from '../../core/game.js';
 import { t } from '../../i18n/index.js';
 import { renderBoard } from '../components/board.js';
 import { createHistory } from '../components/history.js';
@@ -18,9 +28,10 @@ const DRAW_GUARD_MS = 300;
  *
  * @param {HTMLElement} root
  * @param {Store} store
- * @param {{ onOpenSettings?: () => void, onOpenCheck?: () => void }} [deps]
+ * @param {{ onOpenSettings?: () => void, onOpenCheck?: () => void,
+ *   secondsToNext?: () => number | null }} [deps]
  */
-export function mountGameScreen(root, store, { onOpenSettings, onOpenCheck } = {}) {
+export function mountGameScreen(root, store, { onOpenSettings, onOpenCheck, secondsToNext } = {}) {
   const lastBall = createLastBall();
   const history = createHistory();
   const prizes = createPrizes();
@@ -62,7 +73,16 @@ export function mountGameScreen(root, store, { onOpenSettings, onOpenCheck } = {
   const drawBtn = h('button', { type: 'button', class: 'btn btn-primary btn-block', onclick: onDraw });
   const undoBtn = h('button', { type: 'button', class: 'btn', onclick: onUndo });
   const checkBtn = h('button', { type: 'button', class: 'btn', onclick: () => onOpenCheck?.() });
-  const actionbar = h('footer', { class: 'actionbar' }, drawBtn, checkBtn, undoBtn);
+  // Sorteo automático (US5): iniciar / pausa / reanudar, volver a manual y cuenta atrás.
+  const autoBtn = h('button', { type: 'button', class: 'btn', onclick: onAutoToggle });
+  const manualBtn = h('button', {
+    type: 'button',
+    class: 'btn',
+    onclick: () => store.dispatch((g) => setMode(g, 'manual')),
+  });
+  const autoStatus = h('p', { class: 'auto-status', 'aria-live': 'off' });
+  const actionbar = h('footer', { class: 'actionbar' },
+    autoStatus, drawBtn, autoBtn, checkBtn, undoBtn, manualBtn);
 
   // --- Menú (nueva partida / terminar) ---
   const newGameBtn = h('button', { type: 'button', class: 'btn btn-block', onclick: onNewGame });
@@ -76,6 +96,24 @@ export function mountGameScreen(root, store, { onOpenSettings, onOpenCheck } = {
   root.replaceChildren(topbar, content, actionbar, menu);
 
   let lastDrawAt = 0;
+
+  function onAutoToggle() {
+    const g = store.getState();
+    if (g.mode === 'manual') store.dispatch((s) => setMode(s, 'auto'));
+    else if (g.autoPaused) {
+      if (canDraw(g)) store.dispatch(resumeAuto);
+    } else store.dispatch(pauseAuto);
+  }
+
+  function renderAutoStatus() {
+    const g = store.getState();
+    autoStatus.hidden = g.mode !== 'auto' || g.status === 'finished';
+    if (autoStatus.hidden) return;
+    const s = secondsToNext?.() ?? null;
+    autoStatus.textContent = t('auto.interval', { s: g.intervalSec }) +
+      (s === null ? ` · ${t('auto.paused')}` : ` · ${t('auto.next', { s })}`);
+  }
+  setInterval(renderAutoStatus, 250);
 
   function onDraw() {
     const now = performance.now();
@@ -163,7 +201,14 @@ export function mountGameScreen(root, store, { onOpenSettings, onOpenCheck } = {
     prizes.update(game);
     renderBoard(boardEl, { marked: new Set(game.drawn) });
 
-    drawBtn.disabled = !canDraw(game);
+    const autoRunning = game.mode === 'auto' && !game.autoPaused;
+    drawBtn.disabled = !canDraw(game) || autoRunning;
+    autoBtn.disabled = game.mode === 'auto' && game.autoPaused && !canDraw(game);
+    manualBtn.hidden = game.mode !== 'auto';
+    autoBtn.classList.toggle('btn-auto-running', autoRunning);
+    autoBtn.textContent = t(game.mode === 'manual' ? 'auto.start' : autoRunning ? 'auto.pause' : 'auto.resume');
+    manualBtn.textContent = t('auto.manual');
+    renderAutoStatus();
     undoBtn.disabled = !canUndo(game);
     actionbar.hidden = finished;
     finishBtn.disabled = finished;

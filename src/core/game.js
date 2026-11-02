@@ -124,6 +124,49 @@ export function undoLastBall(game) {
 }
 
 /**
+ * Cambia el modo de sorteo. En automático arranca sin pausa (si quedan bolas); en manual,
+ * el automático queda en pausa.
+ * @param {Game} game
+ * @param {'manual' | 'auto'} mode
+ * @returns {Game}
+ */
+export function setMode(game, mode) {
+  if (mode === 'auto') return { ...game, mode, autoPaused: !canDraw(game) };
+  return { ...game, mode, autoPaused: true };
+}
+
+/**
+ * @param {Game} game
+ * @param {number} sec Entero 3-30 (FR-007).
+ * @returns {Game}
+ */
+export function setIntervalSec(game, sec) {
+  if (!Number.isInteger(sec) || sec < INTERVAL_MIN || sec > INTERVAL_MAX) {
+    throw new GameError('invalid-interval');
+  }
+  return { ...game, intervalSec: sec };
+}
+
+/**
+ * @param {Game} game
+ * @returns {Game}
+ */
+export function pauseAuto(game) {
+  if (game.mode !== 'auto' || game.autoPaused) return game;
+  return { ...game, autoPaused: true };
+}
+
+/**
+ * @param {Game} game
+ * @returns {Game}
+ */
+export function resumeAuto(game) {
+  if (game.mode !== 'auto') return game;
+  if (!canDraw(game)) throw new GameError('no-balls-left');
+  return game.autoPaused ? { ...game, autoPaused: false } : game;
+}
+
+/**
  * ¿Hay alguna línea concedida en la partida?
  * @param {Game} game
  */

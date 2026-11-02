@@ -4,8 +4,9 @@ import './styles/game.css';
 import './styles/settings.css';
 import './styles/check.css';
 
-import { awardPrize, createGame, finishGame, restoreForResume } from './core/game.js';
+import { awardPrize, createGame, finishGame, restoreForResume, setIntervalSec } from './core/game.js';
 import { applyTranslations, detectLang, setLang } from './i18n/index.js';
+import { createAutoDraw } from './ui/auto-draw.js';
 import { confirm } from './ui/dialog.js';
 import { retranslateNotices, showNotice } from './ui/notices.js';
 import { loadGame, loadPrefs, saveGame, savePrefs } from './ui/persistence.js';
@@ -39,7 +40,10 @@ const view = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
  * @param {Store} store
  */
 export function mountScreens(store) {
+  const autoDraw = createAutoDraw(store);
+
   const game = mountGameScreen(view('view-game'), store, {
+    secondsToNext: autoDraw.secondsToNext,
     onOpenSettings: () => showView('settings'),
     onOpenCheck() {
       check.open();
@@ -59,6 +63,8 @@ export function mountScreens(store) {
   const settings = mountSettingsScreen(view('view-settings'), {
     getPrefs: () => prefs,
     onBack: closeView,
+    getIntervalSec: () => store.getState().intervalSec,
+    onIntervalChange: (sec) => store.dispatch((g) => setIntervalSec(g, sec)),
     onChange(patch) {
       updatePrefs(patch);
       if (patch.lang) {

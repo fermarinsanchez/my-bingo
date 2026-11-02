@@ -13,6 +13,12 @@ import {
   restoreForResume,
   awardPrize,
   hasLine,
+  setMode,
+  setIntervalSec,
+  pauseAuto,
+  resumeAuto,
+  INTERVAL_MIN,
+  INTERVAL_MAX,
 } from '../../src/core/game.js';
 import { GameError } from '../../src/core/errors.js';
 
@@ -245,5 +251,47 @@ describe('awardPrize / hasLine (FR-021a)', () => {
   it('hasLine es false si solo hay bingos', () => {
     const bingo = { type: 'bingo', numbers: [], completionPosition: 1, awardedAtPosition: 1 };
     expect(hasLine({ ...g, prizes: [bingo] })).toBe(false);
+  });
+});
+
+describe('modo automático (FR-007, FR-008)', () => {
+  it('setMode auto quita la pausa y manual la pone', () => {
+    const auto = setMode(createGame(), 'auto');
+    expect(auto.mode).toBe('auto');
+    expect(auto.autoPaused).toBe(false);
+    const manual = setMode(auto, 'manual');
+    expect(manual.mode).toBe('manual');
+    expect(manual.autoPaused).toBe(true);
+  });
+
+  it('setIntervalSec acepta 3 y 30 y rechaza 2, 31 y 4.5', () => {
+    expect(INTERVAL_MIN).toBe(3);
+    expect(INTERVAL_MAX).toBe(30);
+    expect(setIntervalSec(createGame(), 3).intervalSec).toBe(3);
+    expect(setIntervalSec(createGame(), 30).intervalSec).toBe(30);
+    for (const bad of [2, 31, 4.5]) {
+      expect(() => setIntervalSec(createGame(), bad)).toThrow(expect.objectContaining({ code: 'invalid-interval' }));
+    }
+  });
+
+  it('pauseAuto y resumeAuto solo actúan en modo automático', () => {
+    const auto = setMode(createGame(), 'auto');
+    const paused = pauseAuto(auto);
+    expect(paused.autoPaused).toBe(true);
+    expect(resumeAuto(paused).autoPaused).toBe(false);
+    expect(resumeAuto(auto)).toBe(auto);
+    expect(pauseAuto(paused)).toBe(paused);
+    const manual = createGame();
+    expect(pauseAuto(manual)).toBe(manual);
+    expect(resumeAuto(manual)).toBe(manual);
+  });
+
+  it('resumeAuto sin bolas pendientes lanza no-balls-left', () => {
+    const full = { ...setMode(drawN(createGame(), 90), 'auto'), autoPaused: true };
+    expect(() => resumeAuto(full)).toThrow(expect.objectContaining({ code: 'no-balls-left' }));
+  });
+
+  it('setMode auto sin bolas pendientes queda en pausa', () => {
+    expect(setMode(drawN(createGame(), 90), 'auto').autoPaused).toBe(true);
   });
 });

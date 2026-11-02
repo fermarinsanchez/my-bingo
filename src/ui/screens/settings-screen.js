@@ -1,3 +1,4 @@
+import { INTERVAL_DEFAULT, INTERVAL_MAX, INTERVAL_MIN } from '../../core/game.js';
 import { t } from '../../i18n/index.js';
 import { h } from '../dom.js';
 
@@ -37,9 +38,10 @@ function radioGroup(name, options, onChange) {
  *
  * @param {HTMLElement} root
  * @param {{ getPrefs: () => Preferences, onChange: (patch: Partial<Preferences>) => void,
- *   onBack: () => void }} deps
+ *   onBack: () => void, getIntervalSec?: () => number,
+ *   onIntervalChange?: (sec: number) => void }} deps
  */
-export function mountSettingsScreen(root, { getPrefs, onChange, onBack }) {
+export function mountSettingsScreen(root, { getPrefs, onChange, onBack, getIntervalSec, onIntervalChange }) {
   const backBtn = h('button', { type: 'button', class: 'btn btn-icon', onclick: onBack }, '←');
   const title = h('h2', { id: 'settings-title' });
 
@@ -54,8 +56,29 @@ export function mountSettingsScreen(root, { getPrefs, onChange, onBack }) {
     { value: 'dark', labelKey: 'settings.themeDark' },
   ], (value) => onChange({ theme: /** @type {'system' | 'light' | 'dark'} */ (value) }));
 
-  /** Hueco para controles añadidos por otras historias (intervalo del automático, US5). */
+  /** Hueco para controles añadidos por otras historias. */
   const extra = h('div', { class: 'settings-extra' });
+
+  // Intervalo del sorteo automático: 3-30 s, por defecto 5 (FR-007).
+  const intervalLabel = h('label', { for: 'interval-input', class: 'interval__label' });
+  const intervalValue = h('output', { for: 'interval-input', class: 'interval__value' });
+  const intervalInput = h('input', {
+    id: 'interval-input',
+    type: 'range',
+    min: INTERVAL_MIN,
+    max: INTERVAL_MAX,
+    step: 1,
+    value: INTERVAL_DEFAULT,
+    oninput: () => {
+      const sec = Number(intervalInput.value);
+      intervalValue.textContent = t('auto.interval', { s: sec });
+      onIntervalChange?.(sec);
+    },
+  });
+  const interval = h('div', { class: 'interval' },
+    h('div', { class: 'interval__head' }, intervalLabel, intervalValue), intervalInput);
+  interval.hidden = !onIntervalChange;
+  extra.append(interval);
 
   const version = h('p', { class: 'settings-info' });
   const offline = h('p', { class: 'settings-info' });
@@ -71,6 +94,10 @@ export function mountSettingsScreen(root, { getPrefs, onChange, onBack }) {
     backBtn.setAttribute('aria-label', t('common.back'));
     lang.update('settings.language', prefs.lang);
     theme.update('settings.theme', prefs.theme);
+    const sec = getIntervalSec?.() ?? INTERVAL_DEFAULT;
+    intervalLabel.textContent = t('settings.interval');
+    intervalInput.value = String(sec);
+    intervalValue.textContent = t('auto.interval', { s: sec });
     version.textContent = t('settings.version', { v: __APP_VERSION__ });
     offline.textContent = t('settings.offlinePending');
     // Lista para offline = hay un service worker activo con la app precacheada.
