@@ -23,4 +23,11 @@ export default {
   'newGame.confirmMessage': 'Se perderá la partida actual.',
   'finish.confirmTitle': '¿Terminar la partida?',
   'finish.confirmMessage': 'Ya no se podrán sacar más bolas.',
+  'history.title': 'Últimas bolas',
+  'history.fullSequence': 'Ver todas',
+  'history.sequenceTitle': 'Orden de salida ({n} bolas)',
+  'history.empty': 'Aún no ha salido ninguna bola.',
+  'board.title': 'Tablero',
+  'board.cellDrawn': '{n}, salido',
+  'board.cellPending': '{n}, pendiente',
 };

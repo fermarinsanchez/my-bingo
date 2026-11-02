@@ -133,11 +133,11 @@ siguiente (quickstart escenarios 2 y 3).
 
 ### Implementation for User Story 2
 
-- [ ] T045 [P] [US2] Create reusable board component `renderBoard(container, { marked: Set<number>, highlighted?: Set<number>, onToggle?: (n) => void })`: 10 columns × 9 rows (1-90), drawn cells with filled background **and** bold + check mark (not color only, FR-010); interactive mode (buttons with `aria-pressed`) when `onToggle` is passed, otherwise static in `src/ui/components/board.js`
-- [ ] T046 [P] [US2] Create history component showing the last 5 balls (`getLastBalls(game, 5)`, most recent first); tapping it opens a `<dialog>` with the full draw sequence numbered by position in `src/ui/components/history.js`
-- [ ] T047 [US2] Integrate board and history into the game screen central area (board below history, scrollable if needed without hiding the bottom bar) in `src/ui/screens/game-screen.js`
-- [ ] T048 [P] [US2] Add board/history styles: cells ≥ 32 px, high-contrast drawn state in both themes, history chips in `src/styles/game.css`
-- [ ] T049 [P] [US2] Add US2 strings (`history.title`, `history.fullSequence`, `board.title`, `board.cellDrawn` "{n}, salido", `board.cellPending` "{n}, pendiente") to `src/i18n/es.js` and `src/i18n/gl.js`
+- [x] T045 [P] [US2] Create reusable board component `renderBoard(container, { marked: Set<number>, highlighted?: Set<number>, onToggle?: (n) => void })`: 10 columns × 9 rows (1-90), drawn cells with filled background **and** bold + check mark (not color only, FR-010); interactive mode (buttons with `aria-pressed`) when `onToggle` is passed, otherwise static in `src/ui/components/board.js`
+- [x] T046 [P] [US2] Create history component showing the last 5 balls (`getLastBalls(game, 5)`, most recent first); tapping it opens a `<dialog>` with the full draw sequence numbered by position in `src/ui/components/history.js`
+- [x] T047 [US2] Integrate board and history into the game screen central area (board below history, scrollable if needed without hiding the bottom bar) in `src/ui/screens/game-screen.js`
+- [x] T048 [P] [US2] Add board/history styles: cells ≥ 32 px, high-contrast drawn state in both themes, history chips in `src/styles/game.css`
+- [x] T049 [P] [US2] Add US2 strings (`history.title`, `history.fullSequence`, `board.title`, `board.cellDrawn` "{n}, salido", `board.cellPending` "{n}, pendiente") to `src/i18n/es.js` and `src/i18n/gl.js`
 
 **Checkpoint**: US1 + US2 funcionan juntas; el tablero refleja también los "deshacer".
 

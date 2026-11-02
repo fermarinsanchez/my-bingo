@@ -23,4 +23,11 @@ export default {
   'newGame.confirmMessage': 'Perderase a partida actual.',
   'finish.confirmTitle': 'Rematar a partida?',
   'finish.confirmMessage': 'Xa non se poderán sacar máis bólas.',
+  'history.title': 'Últimas bólas',
+  'history.fullSequence': 'Ver todas',
+  'history.sequenceTitle': 'Orde de saída ({n} bólas)',
+  'history.empty': 'Aínda non saíu ningunha bóla.',
+  'board.title': 'Taboleiro',
+  'board.cellDrawn': '{n}, saído',
+  'board.cellPending': '{n}, pendente',
 };

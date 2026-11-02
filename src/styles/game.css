@@ -96,3 +96,132 @@
   flex-direction: column;
   gap: var(--space-2);
 }
+
+/* Secciones */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.section-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+
+.section-head .section-title {
+  margin-bottom: 0;
+}
+
+/* Historial (FR-011) */
+.history__chips {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: grid;
+  place-items: center;
+  min-width: var(--tap-min);
+  height: var(--tap-min);
+  padding: 0 var(--space-2);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.chip--latest {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.history__empty {
+  color: var(--muted);
+}
+
+.history__empty[hidden],
+.history__chips[hidden] {
+  display: none;
+}
+
+.sequence {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: var(--space-1) var(--space-3);
+  margin: 0 0 var(--space-5);
+  padding-left: 1.75rem;
+  max-height: 55dvh;
+  overflow-y: auto;
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.sequence li::marker {
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+/* Tablero 1-90 (FR-010) */
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(32px, 1fr));
+  gap: 3px;
+}
+
+.board__cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 32px;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 400;
+}
+
+.board__cell--marked {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 800;
+}
+
+/* Marca de esquina: distingue las salidas también sin color */
+.board__cell--marked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid currentColor;
+  border-left: 7px solid transparent;
+}
+
+.board__cell--highlighted {
+  outline: 3px solid var(--danger);
+  outline-offset: -3px;
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.board--interactive .board__cell {
+  min-height: var(--tap-min);
+  font-size: var(--fs-md);
+  color: var(--text);
+}

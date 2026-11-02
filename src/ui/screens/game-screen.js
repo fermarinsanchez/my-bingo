@@ -1,5 +1,7 @@
 import { canDraw, canUndo, createGame, drawBall, finishGame, undoLastBall } from '../../core/game.js';
 import { t } from '../../i18n/index.js';
+import { renderBoard } from '../components/board.js';
+import { createHistory } from '../components/history.js';
 import { createLastBall } from '../components/last-ball.js';
 import { confirm, DIALOG_OPEN_EVENT } from '../dialog.js';
 import { h } from '../dom.js';
@@ -18,6 +20,9 @@ const DRAW_GUARD_MS = 300;
  */
 export function mountGameScreen(root, store) {
   const lastBall = createLastBall();
+  const history = createHistory();
+  const boardTitle = h('h2', { class: 'section-title', id: 'board-title' });
+  const boardEl = h('div', { class: 'board-wrap', 'aria-labelledby': 'board-title' });
 
   // --- Barra superior ---
   const counter = h('p', { class: 'counter' });
@@ -36,7 +41,12 @@ export function mountGameScreen(root, store) {
 
   // --- Zona central ---
   const message = h('div', { class: 'game-message', hidden: true });
-  const content = h('main', { class: 'content game-content' }, lastBall.el, message);
+  const content = h('main', { class: 'content game-content' },
+    lastBall.el,
+    message,
+    history.el,
+    h('section', { class: 'board-section' }, boardTitle, boardEl),
+  );
 
   // --- Barra de acciones ---
   const drawBtn = h('button', { type: 'button', class: 'btn btn-primary btn-block', onclick: onDraw });
@@ -138,6 +148,8 @@ export function mountGameScreen(root, store) {
     });
     lastBall.update(game.drawn.at(-1) ?? null);
     renderMessage(game);
+    history.update(game);
+    renderBoard(boardEl, { marked: new Set(game.drawn) });
 
     drawBtn.disabled = !canDraw(game);
     undoBtn.disabled = !canUndo(game);
@@ -147,6 +159,7 @@ export function mountGameScreen(root, store) {
     // Textos (se repintan al cambiar de idioma)
     root.querySelector('#game-title').textContent = t('app.title');
     menuBtn.setAttribute('aria-label', t('game.menu'));
+    boardTitle.textContent = t('board.title');
     drawBtn.textContent = t('game.draw');
     undoBtn.textContent = t('game.undo');
     menu.querySelector('#menu-title').textContent = t('game.menu');
