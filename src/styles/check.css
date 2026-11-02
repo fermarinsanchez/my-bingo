@@ -71,8 +71,7 @@
   cursor: pointer;
 }
 
-.chip--removable span {
-  font-size: var(--fs-sm);
+.chip--removable .icon {
   color: var(--muted);
 }
 

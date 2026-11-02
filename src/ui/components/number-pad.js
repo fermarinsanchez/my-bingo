@@ -1,6 +1,7 @@
 import { validateEntry } from '../../core/checker.js';
 import { t } from '../../i18n/index.js';
 import { h } from '../dom.js';
+import { icon } from '../icons.js';
 
 const MAX_DIGITS = 2;
 const ERROR_KEYS = {
@@ -29,11 +30,12 @@ export function createNumberPad({ getNumbers, onAdd }) {
   for (const d of ['1', '2', '3', '4', '5', '6', '7', '8', '9']) {
     keys.append(key(d, () => press(d)));
   }
-  const backspace = key('⌫', () => {
+  const backspace = key('', () => {
     digits = digits.slice(0, -1);
     error.textContent = '';
     paint();
   });
+  backspace.append(icon('backspace', { size: 28 }));
   const zero = key('0', () => press('0'));
   const addBtn = key('', add, 'btn-primary pad__add');
   keys.append(backspace, zero, addBtn);

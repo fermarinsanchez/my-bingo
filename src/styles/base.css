@@ -225,3 +225,15 @@ dialog p {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Iconos SVG */
+.icon {
+  flex: none;
+  display: block;
+}
+
+dialog h2 .icon {
+  display: inline-block;
+  vertical-align: -0.2em;
+  margin-right: var(--space-2);
+}

@@ -248,10 +248,10 @@ comprobación o cambiar de app → se pausa (quickstart escenario 7).
 
 **Purpose**: quality gates de la constitución y validación final
 
-- [ ] T081 [P] Accessibility pass: verify contrast of every token pair in both themes (document ratios as comments), tap targets ≥ 48 px, focus order, `aria-live` on last ball, dialogs return focus; fix issues in `src/styles/tokens.css` and affected components
-- [ ] T082 [P] Landscape fallback: ensure game screen remains usable in landscape (two-column layout: last ball left, board right) in `src/styles/game.css`
-- [ ] T083 Review all screens in Galician for untranslated or overflowing strings and fix in `src/i18n/gl.js`
-- [ ] T084 Run `npm run lint`, `npm run test:coverage` (≥ 90 % in `src/core/`), `npm run build`, `npm run check-size`, `npm run lhci`; fix any failure
+- [x] T081 [P] Accessibility pass: verify contrast of every token pair in both themes (document ratios as comments), tap targets ≥ 48 px, focus order, `aria-live` on last ball, dialogs return focus; fix issues in `src/styles/tokens.css` and affected components
+- [x] T082 [P] Landscape fallback: ensure game screen remains usable in landscape (two-column layout: last ball left, board right) in `src/styles/game.css`
+- [x] T083 Review all screens in Galician for untranslated or overflowing strings and fix in `src/i18n/gl.js`
+- [x] T084 Run `npm run lint`, `npm run test:coverage` (≥ 90 % in `src/core/`), `npm run build`, `npm run check-size`, `npm run lhci`; fix any failure
 - [ ] T085 Execute all manual scenarios in `specs/001-bombo-bingo-offline/quickstart.md` on a real Android phone (and iPhone if available) in airplane mode and record results in the PR description
 
 ---

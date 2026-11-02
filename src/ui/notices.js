@@ -1,4 +1,5 @@
 import { t } from '../i18n/index.js';
+import { icon } from './icons.js';
 
 const AUTO_DISMISS_MS = 6000;
 
@@ -76,7 +77,7 @@ export function showNotice(key, { once, params, persistent = false, action } = {
   close.type = 'button';
   close.className = 'btn btn-icon';
   close.setAttribute('aria-label', t('common.close'));
-  close.textContent = '✕';
+  close.append(icon('close'));
   close.addEventListener('click', () => el.remove());
   el.append(close);
 

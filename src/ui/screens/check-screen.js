@@ -4,6 +4,7 @@ import { renderBoard } from '../components/board.js';
 import { createNumberPad } from '../components/number-pad.js';
 import { DIALOG_OPEN_EVENT } from '../dialog.js';
 import { h } from '../dom.js';
+import { icon } from '../icons.js';
 
 /** @typedef {import('../../core/game.js').Game} Game */
 /** @typedef {import('../../core/checker.js').CheckResult} CheckResult */
@@ -31,7 +32,7 @@ export function mountCheckScreen(root, deps) {
   let awardedBingo = false;
 
   // --- Cabecera ---
-  const backBtn = h('button', { type: 'button', class: 'btn btn-icon', onclick: deps.onBack }, '←');
+  const backBtn = h('button', { type: 'button', class: 'btn btn-icon', onclick: deps.onBack }, icon('back'));
   const title = h('h2', { id: 'check-title' });
 
   // --- Tipo: línea / bingo ---
@@ -131,7 +132,7 @@ export function mountCheckScreen(root, deps) {
     }
 
     if (result.valid) {
-      resultTitle.textContent = `✓ ${t(isLine ? 'check.lineValid' : 'check.bingoValid')}`;
+      resultTitle.replaceChildren(icon('check', { size: 28, stroke: 3 }), t(isLine ? 'check.lineValid' : 'check.bingoValid'));
       resultBody.replaceChildren(
         result.ballsSince > 0
           ? h('p', { class: 'result-late' },
@@ -146,7 +147,7 @@ export function mountCheckScreen(root, deps) {
         action('check.award', award, 'btn-primary'),
       );
     } else {
-      resultTitle.textContent = `✕ ${t(isLine ? 'check.lineInvalid' : 'check.bingoInvalid')}`;
+      resultTitle.replaceChildren(icon('close', { size: 28, stroke: 3 }), t(isLine ? 'check.lineInvalid' : 'check.bingoInvalid'));
       resultBody.replaceChildren(
         h('p', {}, t('check.notDrawn')),
         h('ul', { class: 'check-chips' },
@@ -200,7 +201,7 @@ export function mountCheckScreen(root, deps) {
             class: `chip chip--removable${check.missing.has(n) ? ' chip--missing' : ''}`,
             'aria-label': t('check.remove', { n }),
             onclick: () => setNumbers(check.numbers.filter((x) => x !== n)),
-          }, String(n), h('span', { 'aria-hidden': 'true' }, ' ✕')),
+          }, String(n), icon('close', { size: 16, stroke: 2.5 })),
         ),
       ),
     );

@@ -16,6 +16,7 @@ import { createPrizes } from '../components/prizes.js';
 import { createLastBall } from '../components/last-ball.js';
 import { confirm, DIALOG_OPEN_EVENT } from '../dialog.js';
 import { h } from '../dom.js';
+import { icon } from '../icons.js';
 
 /** Margen mínimo entre dos "Sacar bola" para absorber dobles toques accidentales. */
 const DRAW_GUARD_MS = 300;
@@ -44,13 +45,13 @@ export function mountGameScreen(root, store, { onOpenSettings, onOpenCheck, seco
     type: 'button',
     class: 'btn btn-icon',
     onclick: () => onOpenSettings?.(),
-  }, '⚙');
+  }, icon('settings'));
   const menuBtn = h('button', {
     type: 'button',
     class: 'btn btn-icon',
     'aria-haspopup': 'dialog',
     onclick: () => openMenu(),
-  }, '⋮');
+  }, icon('more'));
 
   const topbar = h('header', { class: 'topbar' },
     h('h1', { id: 'game-title', class: 'visually-hidden' }),

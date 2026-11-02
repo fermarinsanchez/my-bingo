@@ -79,8 +79,10 @@
 }
 
 /* Barra inferior: botón principal a ancho completo; secundarios repartidos */
+/* Secundarios: reparten la fila y pasan a otra línea si no caben (nunca recortan el texto). */
 .actionbar > .btn:not(.btn-block) {
-  flex: 1 1 0;
+  flex: 1 1 6.5rem;
+  padding-inline: var(--space-2);
 }
 
 /* Menú tipo hoja */
@@ -175,7 +177,8 @@
 /* Tablero 1-90 (FR-010) */
 .board {
   display: grid;
-  grid-template-columns: repeat(10, minmax(32px, 1fr));
+  /* 10 columnas que reparten el ancho: nunca desbordan en pantallas de 320 px. */
+  grid-template-columns: repeat(10, minmax(0, 1fr));
   gap: 3px;
 }
 
@@ -183,7 +186,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 32px;
+  min-width: 0;
   aspect-ratio: 1;
   padding: 0;
   border: 1px solid var(--border);
@@ -221,6 +224,9 @@
 }
 
 .board--interactive .board__cell {
+  /* Cuadrícula de comprobación: 48 px de alto; el ancho lo dan las 10 columnas
+     (≈ 30 px en 360 px, por encima del mínimo WCAG 2.2 AA de 24 × 24 px). */
+  aspect-ratio: auto;
   min-height: var(--tap-min);
   font-size: var(--fs-md);
   color: var(--text);
@@ -242,4 +248,70 @@
 .btn-auto-running {
   border-color: var(--primary);
   border-width: 3px;
+}
+
+/* Horizontal (T082): bola a la izquierda; historial y tablero a la derecha. */
+@media (orientation: landscape) and (max-height: 600px) {
+  #view-game {
+    max-width: 1100px;
+  }
+
+  .game-content {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-areas:
+      'prizes prizes'
+      'ball history'
+      'ball board'
+      'msg board';
+    align-items: start;
+    column-gap: var(--space-5);
+  }
+
+  .prizes {
+    grid-area: prizes;
+  }
+
+  .last-ball-wrap {
+    grid-area: ball;
+  }
+
+  .last-ball {
+    width: min(34vw, 54vh);
+  }
+
+  .game-message {
+    grid-area: msg;
+  }
+
+  .history {
+    grid-area: history;
+  }
+
+  .board-section {
+    grid-area: board;
+  }
+
+  .board__cell {
+    aspect-ratio: auto;
+    min-height: 28px;
+  }
+
+  #view-game .actionbar {
+    flex-wrap: nowrap;
+  }
+
+  #view-game .actionbar > .btn-block {
+    flex: 2 1 0;
+    width: auto;
+  }
+
+  .btn-primary {
+    min-height: var(--tap-min);
+  }
+
+  .auto-status {
+    flex: 0 1 auto;
+    align-self: center;
+  }
 }

@@ -1,6 +1,7 @@
 import { INTERVAL_DEFAULT, INTERVAL_MAX, INTERVAL_MIN } from '../../core/game.js';
 import { t } from '../../i18n/index.js';
 import { h } from '../dom.js';
+import { icon } from '../icons.js';
 
 /** @typedef {import('../../core/storage.js').Preferences} Preferences */
 
@@ -42,7 +43,7 @@ function radioGroup(name, options, onChange) {
  *   onIntervalChange?: (sec: number) => void }} deps
  */
 export function mountSettingsScreen(root, { getPrefs, onChange, onBack, getIntervalSec, onIntervalChange }) {
-  const backBtn = h('button', { type: 'button', class: 'btn btn-icon', onclick: onBack }, '←');
+  const backBtn = h('button', { type: 'button', class: 'btn btn-icon', onclick: onBack }, icon('back'));
   const title = h('h2', { id: 'settings-title' });
 
   const lang = radioGroup('lang', [

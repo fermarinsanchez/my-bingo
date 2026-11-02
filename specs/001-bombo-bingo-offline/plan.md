@@ -117,6 +117,9 @@ src/
 │   ├── theme.js              # data-theme + meta theme-color
 │   ├── sw-update.js          # registro SW (virtual:pwa-register), aviso de actualización
 │   ├── dialog.js             # confirmaciones con <dialog>
+│   ├── dom.js                # helper h() para crear elementos (añadido en implementación)
+│   ├── icons.js              # iconos SVG en línea (sustituyen símbolos de texto; ver nota)
+│   ├── router.js             # vistas + botón "atrás" del sistema
 │   ├── notices.js            # avisos no bloqueantes "una vez"
 │   ├── screens/
 │   │   ├── game-screen.js
@@ -146,6 +149,10 @@ tests/
     ├── ci.yml                # PR: npm ci, lint, test:coverage, build, check-size, lhci
     └── deploy.yml            # push a main: build + deploy-pages
 ```
+
+**Nota de implementación (iconos)**: los símbolos de texto (⚙ ⋮ ✕ ← ⌫) obligaban a cargar una
+fuente de reserva en la primera maquetación (TBT 450 ms en Lighthouse móvil). Con iconos SVG en
+línea el rendimiento pasa de 88 a 96-99 y la interactividad queda en 1,5-1,8 s.
 
 **Structure Decision**: proyecto único de frontend estático en la raíz. `src/core/` concentra
 la lógica pura testeada (principio V y VI); `src/ui/` contiene todo lo que toca DOM, timers,
