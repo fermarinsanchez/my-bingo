@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#a8201a" />
+    <meta name="description" content="Bombo de bingo de 90 bolas que funciona sin conexión." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <title>Bombo de Bingo</title>
+  </head>
+  <body>
+    <section id="view-game" class="view" aria-labelledby="game-title"></section>
+    <section id="view-check" class="view" aria-labelledby="check-title" hidden></section>
+    <section id="view-settings" class="view" aria-labelledby="settings-title" hidden></section>
+
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+      <h2 id="confirm-title"></h2>
+      <p id="confirm-message"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-action="cancel"></button>
+        <button type="button" class="btn btn-primary" data-action="confirm"></button>
+      </div>
+    </dialog>
+
+    <div id="notices" class="notices" role="status" aria-live="polite"></div>
+
+    <noscript>Esta aplicación necesita JavaScript.</noscript>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+/*
+ * Design tokens. Contraste WCAG 2.1 AA calculado por par (texto ≥ 4.5:1, UI ≥ 3:1):
+ *
+ * Claro                                        Oscuro
+ *   --text    / --bg        15.62:1           |  --text    / --bg        16.71:1
+ *   --text    / --surface   17.17:1           |  --text    / --surface   14.83:1
+ *   --text    / --surface-2 14.16:1           |  --text    / --surface-2 12.73:1
+ *   --muted   / --surface    8.62:1           |  --muted   / --surface    9.47:1
+ *   --muted   / --surface-2  7.11:1           |  --muted   / --surface-2  8.13:1
+ *   --on-primary / --primary 7.28:1           |  --on-primary / --primary 8.88:1
+ *   --primary / --surface    7.28:1 (bg 6.62) |  --primary / --surface    7.52:1 (bg 8.47)
+ *   --border  / --surface    5.04:1           |  --border  / --surface    5.05:1
+ *   --danger  / --surface    8.92:1           |  --danger  / --surface    9.77:1
+ *   --ok      / --surface    6.55:1           |  --ok      / --surface    9.71:1
+ *   --focus   / --bg         5.28:1           |  --focus   / --bg         8.95:1
+ */
+:root {
+  color-scheme: light;
+  --bg: #f6f4ef;
+  --surface: #ffffff;
+  --surface-2: #ece9e2;
+  --text: #1b1b1f;
+  --muted: #4b4b55;
+  --primary: #a8201a;
+  --on-primary: #ffffff;
+  --border: #6e6e78;
+  --danger: #8f1d14;
+  --ok: #1d6b34;
+  --focus: #1f5fd1;
+  --shadow: 0 1px 3px rgb(0 0 0 / 0.18);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --radius: 12px;
+  --radius-pill: 999px;
+
+  --tap-min: 48px;
+  --tap-primary: 64px;
+
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fs-sm: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #121216;
+    --surface: #1e1e24;
+    --surface-2: #2a2a32;
+    --text: #f2f2f4;
+    --muted: #c3c3cc;
+    --primary: #ff8f85;
+    --on-primary: #1a0605;
+    --border: #8d8d98;
+    --danger: #ffb4ab;
+    --ok: #7fd99a;
+    --focus: #8ab4ff;
+    --shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #121216;
+  --surface: #1e1e24;
+  --surface-2: #2a2a32;
+  --text: #f2f2f4;
+  --muted: #c3c3cc;
+  --primary: #ff8f85;
+  --on-primary: #1a0605;
+  --border: #8d8d98;
+  --danger: #ffb4ab;
+  --ok: #7fd99a;
+  --focus: #8ab4ff;
+  --shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+}

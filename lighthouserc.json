@@ -1,0 +1,31 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./dist-lhci",
+      "numberOfRuns": 1,
+      "settings": {
+        "onlyCategories": [
+          "accessibility",
+          "best-practices",
+          "performance"
+        ],
+        "chromeFlags": "--no-sandbox",
+        "formFactor": "mobile"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.9
+          }
+        ]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}
