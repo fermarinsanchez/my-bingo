@@ -2,8 +2,9 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/game.css';
 import './styles/settings.css';
+import './styles/check.css';
 
-import { createGame, restoreForResume } from './core/game.js';
+import { awardPrize, createGame, finishGame, restoreForResume } from './core/game.js';
 import { applyTranslations, detectLang, setLang } from './i18n/index.js';
 import { confirm } from './ui/dialog.js';
 import { retranslateNotices, showNotice } from './ui/notices.js';
@@ -13,6 +14,7 @@ import { createStore } from './ui/store.js';
 import { initSwUpdate } from './ui/sw-update.js';
 import { applyTheme } from './ui/theme.js';
 import { createWakeLock } from './ui/wake-lock.js';
+import { mountCheckScreen } from './ui/screens/check-screen.js';
 import { mountGameScreen } from './ui/screens/game-screen.js';
 import { mountSettingsScreen } from './ui/screens/settings-screen.js';
 
@@ -39,6 +41,19 @@ const view = (id) => /** @type {HTMLElement} */ (document.getElementById(id));
 export function mountScreens(store) {
   const game = mountGameScreen(view('view-game'), store, {
     onOpenSettings: () => showView('settings'),
+    onOpenCheck() {
+      check.open();
+      showView('check');
+    },
+  });
+
+  const check = mountCheckScreen(view('view-check'), {
+    getGame: store.getState,
+    getInputMethod: () => prefs.inputMethod,
+    onInputMethodChange: (inputMethod) => updatePrefs({ inputMethod }),
+    onAward: (c, result) => store.dispatch((g) => awardPrize(g, c, result)),
+    onFinish: () => store.dispatch((g) => (g.status === 'finished' ? g : finishGame(g))),
+    onBack: closeView,
   });
 
   const settings = mountSettingsScreen(view('view-settings'), {
@@ -56,7 +71,7 @@ export function mountScreens(store) {
     },
   });
 
-  const screens = { game, settings };
+  const screens = { game, check, settings };
   function renderAll() {
     for (const s of Object.values(screens)) s.render();
     retranslateNotices();
@@ -64,6 +79,7 @@ export function mountScreens(store) {
   // Ajustes muestra estados que cambian (p. ej. modo offline listo): se repinta al abrirse.
   onViewChange((v) => {
     if (v === 'settings') settings.render();
+    if (v !== 'check') check.close();
   });
   navigator.serviceWorker?.addEventListener('controllerchange', () => settings.render());
   return screens;

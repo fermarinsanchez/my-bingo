@@ -124,6 +124,33 @@ export function undoLastBall(game) {
 }
 
 /**
+ * ¿Hay alguna línea concedida en la partida?
+ * @param {Game} game
+ */
+export function hasLine(game) {
+  return game.prizes.some((p) => p.type === 'line');
+}
+
+/**
+ * Concede un premio a partir de una comprobación válida (FR-021a).
+ * @param {Game} game
+ * @param {{ type: 'line' | 'bingo', numbers: readonly number[] }} check
+ * @param {{ valid: boolean, completionPosition: number | null }} result
+ * @returns {Game}
+ */
+export function awardPrize(game, check, result) {
+  if (!result.valid || result.completionPosition === null) throw new GameError('invalid-prize');
+  /** @type {Prize} */
+  const prize = {
+    type: check.type,
+    numbers: [...check.numbers],
+    completionPosition: result.completionPosition,
+    awardedAtPosition: game.drawn.length,
+  };
+  return { ...game, prizes: [...game.prizes, prize] };
+}
+
+/**
  * Al recuperar una partida tras un cierre, el automático vuelve siempre en pausa (FR-013).
  * @param {Game} game
  * @returns {Game}

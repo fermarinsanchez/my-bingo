@@ -2,6 +2,7 @@ import { canDraw, canUndo, createGame, drawBall, finishGame, undoLastBall } from
 import { t } from '../../i18n/index.js';
 import { renderBoard } from '../components/board.js';
 import { createHistory } from '../components/history.js';
+import { createPrizes } from '../components/prizes.js';
 import { createLastBall } from '../components/last-ball.js';
 import { confirm, DIALOG_OPEN_EVENT } from '../dialog.js';
 import { h } from '../dom.js';
@@ -17,11 +18,12 @@ const DRAW_GUARD_MS = 300;
  *
  * @param {HTMLElement} root
  * @param {Store} store
- * @param {{ onOpenSettings?: () => void }} [deps]
+ * @param {{ onOpenSettings?: () => void, onOpenCheck?: () => void }} [deps]
  */
-export function mountGameScreen(root, store, { onOpenSettings } = {}) {
+export function mountGameScreen(root, store, { onOpenSettings, onOpenCheck } = {}) {
   const lastBall = createLastBall();
   const history = createHistory();
+  const prizes = createPrizes();
   const boardTitle = h('h2', { class: 'section-title', id: 'board-title' });
   const boardEl = h('div', { class: 'board-wrap', 'aria-labelledby': 'board-title' });
 
@@ -49,6 +51,7 @@ export function mountGameScreen(root, store, { onOpenSettings } = {}) {
   // --- Zona central ---
   const message = h('div', { class: 'game-message', hidden: true });
   const content = h('main', { class: 'content game-content' },
+    prizes.el,
     lastBall.el,
     message,
     history.el,
@@ -58,7 +61,8 @@ export function mountGameScreen(root, store, { onOpenSettings } = {}) {
   // --- Barra de acciones ---
   const drawBtn = h('button', { type: 'button', class: 'btn btn-primary btn-block', onclick: onDraw });
   const undoBtn = h('button', { type: 'button', class: 'btn', onclick: onUndo });
-  const actionbar = h('footer', { class: 'actionbar' }, drawBtn, undoBtn);
+  const checkBtn = h('button', { type: 'button', class: 'btn', onclick: () => onOpenCheck?.() });
+  const actionbar = h('footer', { class: 'actionbar' }, drawBtn, checkBtn, undoBtn);
 
   // --- Menú (nueva partida / terminar) ---
   const newGameBtn = h('button', { type: 'button', class: 'btn btn-block', onclick: onNewGame });
@@ -156,6 +160,7 @@ export function mountGameScreen(root, store, { onOpenSettings } = {}) {
     lastBall.update(game.drawn.at(-1) ?? null);
     renderMessage(game);
     history.update(game);
+    prizes.update(game);
     renderBoard(boardEl, { marked: new Set(game.drawn) });
 
     drawBtn.disabled = !canDraw(game);
@@ -170,6 +175,7 @@ export function mountGameScreen(root, store, { onOpenSettings } = {}) {
     boardTitle.textContent = t('board.title');
     drawBtn.textContent = t('game.draw');
     undoBtn.textContent = t('game.undo');
+    checkBtn.textContent = t('check.open');
     menu.querySelector('#menu-title').textContent = t('game.menu');
     newGameBtn.textContent = t('game.newGame');
     finishBtn.textContent = t('game.finish');

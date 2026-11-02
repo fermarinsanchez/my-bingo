@@ -11,6 +11,8 @@ import {
   undoLastBall,
   canUndo,
   restoreForResume,
+  awardPrize,
+  hasLine,
 } from '../../src/core/game.js';
 import { GameError } from '../../src/core/errors.js';
 
@@ -207,5 +209,41 @@ describe('restoreForResume (FR-013)', () => {
     const r = restoreForResume(g);
     expect(r).toEqual({ ...g, autoPaused: true });
     expect(g.autoPaused).toBe(false);
+  });
+});
+
+describe('awardPrize / hasLine (FR-021a)', () => {
+  const line = [3, 18, 25, 61, 77];
+  const g = withDrawn([40, 3, 18, 25, 61, 77, 23]);
+  const valid = { valid: true, missing: [], completionNumber: 77, completionPosition: 6, ballsSince: 1 };
+
+  it('un resultado válido añade el premio con awardedAtPosition = drawn.length', () => {
+    const next = awardPrize(g, { type: 'line', numbers: line }, valid);
+    expect(next.prizes).toEqual([{ type: 'line', numbers: line, completionPosition: 6, awardedAtPosition: 7 }]);
+    expect(g.prizes).toEqual([]);
+    expect(next.drawn).toEqual(g.drawn);
+  });
+
+  it('un resultado no válido lanza invalid-prize', () => {
+    expect(() => awardPrize(g, { type: 'line', numbers: line }, { ...valid, valid: false }))
+      .toThrow(expect.objectContaining({ code: 'invalid-prize' }));
+  });
+
+  it('tras conceder un premio con la bola actual no se puede deshacer', () => {
+    const next = awardPrize(g, { type: 'line', numbers: line }, valid);
+    expect(canUndo(next)).toBe(false);
+  });
+
+  it('hasLine es true tras una línea y se admiten varias líneas', () => {
+    expect(hasLine(g)).toBe(false);
+    const one = awardPrize(g, { type: 'line', numbers: line }, valid);
+    const two = awardPrize(one, { type: 'line', numbers: [40, 3, 18, 25, 23] }, { ...valid, completionPosition: 7 });
+    expect(hasLine(one)).toBe(true);
+    expect(two.prizes).toHaveLength(2);
+  });
+
+  it('hasLine es false si solo hay bingos', () => {
+    const bingo = { type: 'bingo', numbers: [], completionPosition: 1, awardedAtPosition: 1 };
+    expect(hasLine({ ...g, prizes: [bingo] })).toBe(false);
   });
 });

@@ -1,0 +1,205 @@
+/* Pantalla de comprobación */
+.check-content {
+  gap: var(--space-3);
+}
+
+/* Selector segmentado (Línea/Bingo, Cuadrícula/Teclado) */
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.segment {
+  min-height: var(--tap-min);
+  padding: var(--space-2);
+  border: 0;
+  border-radius: calc(var(--radius) - 4px);
+  background: transparent;
+  color: var(--text);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.segment[aria-pressed='true'] {
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 800;
+}
+
+.segmented--small .segment {
+  font-size: var(--fs-md);
+}
+
+.check-counter {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.check-counter--extra {
+  color: var(--danger);
+}
+
+.check-empty {
+  color: var(--muted);
+}
+
+.check-empty[hidden] {
+  display: none;
+}
+
+/* Números introducidos */
+.check-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chip--removable {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  cursor: pointer;
+}
+
+.chip--removable span {
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+
+/* No salido: color + tachado + borde discontinuo (no solo color) */
+.chip--missing {
+  border-style: dashed;
+  border-color: var(--danger);
+  color: var(--danger);
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.check-grid[hidden],
+.pad[hidden] {
+  display: none;
+}
+
+/* Teclado numérico */
+.pad {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pad__display {
+  display: block;
+  min-height: var(--tap-primary);
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.pad__error {
+  min-height: 1.4em;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.pad__keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.pad__key {
+  min-height: 56px;
+  font-size: var(--fs-xl);
+}
+
+.pad__add {
+  font-size: var(--fs-lg);
+  min-height: 56px;
+}
+
+/* Premios en la pantalla de partida */
+.prizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prizes[hidden] {
+  display: none;
+}
+
+.prize {
+  padding: var(--space-1) var(--space-3);
+  border: 2px solid var(--ok);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.prize--bingo {
+  border-width: 3px;
+}
+
+/* Resultado */
+.result-dialog--ok {
+  border-color: var(--ok);
+}
+
+.result-dialog--ok h2 {
+  color: var(--ok);
+}
+
+.result-dialog--ko {
+  border-color: var(--danger);
+}
+
+.result-dialog--ko h2 {
+  color: var(--danger);
+}
+
+.result-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.result-body p {
+  margin: 0;
+  color: var(--text);
+}
+
+/* Acción principal arriba y a ancho completo, al alcance del pulgar */
+.result-actions {
+  flex-direction: column-reverse;
+}
+
+.result-actions .btn {
+  width: 100%;
+}
+
+.result-late {
+  padding: var(--space-2) var(--space-3);
+  border-left: 4px solid var(--danger);
+  background: var(--surface-2);
+  font-weight: 600;
+}
