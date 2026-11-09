@@ -215,10 +215,12 @@ lista de alias y el contador del cantador, y el contador de los participantes, s
   evento: bola sacada (`ball`), última bola deshecha (`undo`), premio concedido (`prize`) y
   partida terminada (`end` con alcance `game`). Empezar una partida nueva con la sala abierta
   MUST emitirse como un snapshot de la partida nueva.
-- **FR-004**: Cada mensaje de estado emitido por el cantador (eventos y snapshots) MUST llevar
-  un número de secuencia que crece de uno en uno durante toda la vida de la sala, también entre
-  partidas sucesivas. El resto de mensajes del cantador (presencia, cantador conectado) MUST
-  indicar el último número de secuencia emitido.
+- **FR-004**: Cada **cambio de estado** compartido (`ball`, `undo`, `prize`, `end` con alcance
+  `game` y el snapshot de una partida nueva) MUST llevar un número de secuencia que crece de uno
+  en uno durante toda la vida de la sala, también entre partidas sucesivas. Un snapshot enviado
+  en respuesta a una unión o a una petición de resincronización lleva la secuencia del estado que
+  representa, sin incrementarla. El resto de mensajes del cantador (presencia, cantador
+  conectado, cierre de sala) MUST indicar el último número de secuencia emitido.
 - **FR-004a**: Mientras la sala esté abierta, el cantador MUST emitir un latido cada 2
   segundos (`host-online` con la última secuencia emitida), haya o no cambios en la partida.
 - **FR-004b**: Si un participante pasa 6 segundos sin recibir ningún mensaje del cantador,
@@ -242,7 +244,8 @@ lista de alias y el contador del cantador, y el contador de los participantes, s
   espacios al inicio y al final y reducir espacios internos repetidos a uno.
 - **FR-009**: Tras sanearlo, el alias MUST tener entre 1 y 20 caracteres visibles; en otro caso
   la unión se rechaza con el motivo "alias no válido".
-- **FR-010**: El alias MUST ser único entre los participantes conectados, comparando sin
+- **FR-010**: El alias MUST ser único entre los participantes conectados o con plaza reservada
+  (FR-012a), comparando sin
   distinguir mayúsculas/minúsculas; un alias en uso por otra identidad se rechaza con el
   motivo "alias en uso".
 - **FR-011**: La sala MUST admitir como máximo 40 plazas ocupadas, contando conectados y
@@ -280,14 +283,17 @@ lista de alias y el contador del cantador, y el contador de los participantes, s
   por completo su estado y dejarlo sincronizado; un snapshot con secuencia menor MUST
   ignorarse.
 - **FR-021**: Al recuperar la conexión, un participante MUST volver a unirse con su mismo alias
-  e identidad y reconciliarse con el snapshot recibido.
+  e identidad y reconciliarse con el snapshot recibido. Mientras dure su reserva (FR-012a) o
+  siga conectado, el cantador MUST conservarle su alias original (cualquier otro alias en el
+  `join` de reconexión se ignora). Pasada la reserva, vuelve a pedir su alias y lo obtiene si
+  sigue libre.
 - **FR-022**: Un participante MUST tratar como inválido (y no aplicar) cualquier evento que
   contradiga su estado sincronizado (p. ej. una bola ya salida o un deshacer de una bola que no
   es la última), pasando a desincronizado y pidiendo un snapshot.
 
 **Cantador desconectado y cierre**
 
-- **FR-023**: Cuando se informe de que el cantador está desconectado (`host-offline`), los
+- **FR-023**: Cuando el canal notifique que el cantador está desconectado (`host-offline`), los
   participantes MUST pasar a estado "cantador desconectado" conservando la última partida
   conocida; la sala no se cierra por ello y no hay migración de host.
 - **FR-024**: Cuando el cantador vuelva (`host-online`), los participantes MUST pasar a
@@ -329,8 +335,9 @@ lista de alias y el contador del cantador, y el contador de los participantes, s
   de conexión (conectado / reservado durante 30 s tras desconectarse). Solo en memoria.
 - **Mensaje**: unidad intercambiada por el canal. Atributos comunes: versión de protocolo y
   tipo (`join`, petición de resincronización, `snapshot`, `ball`, `undo`, `prize`, `end`,
-  `host-offline`, `host-online`, `presence`, rechazo). Los de estado llevan número de
-  secuencia; los demás del cantador indican la última secuencia emitida.
+  `host-online`, `presence`, rechazo). Los de estado llevan número de secuencia; los demás del
+  cantador indican la última secuencia emitida. `host-offline` no lo envía el cantador: lo
+  notifica el canal (relé) cuando detecta su caída.
 - **Snapshot**: fotografía completa de lo que ve un espectador (ver FR-016). Prevalece sobre
   cualquier evento con secuencia igual o anterior.
 - **Vista del participante**: estado local de cada espectador: copia de solo lectura de la
@@ -352,9 +359,9 @@ lista de alias y el contador del cantador, y el contador de los participantes, s
   repetida ni un orden de bolas distinto del del cantador (0 casos).
 - **SC-003**: Un participante que se une en cualquier momento de la partida queda sincronizado
   tras recibir un único snapshot, en el 100 % de los casos.
-- **SC-003a**: Si se pierde el último cambio y el canal sigue funcionando, el participante lo
-  muestra como máximo 2 s más tarde (siguiente latido más la resincronización), en el 100 % de
-  las simulaciones.
+- **SC-003a**: Si se pierde el último cambio y el canal sigue funcionando, el participante detecta
+  el hueco con el siguiente latido y lo muestra tras una única resincronización: en simulación
+  sin retraso de red, como máximo 2,5 s después del cambio perdido, en el 100 % de los casos.
 - **SC-004**: Con 40 plazas ocupadas, el 100 % de los intentos de unión de una identidad
   nueva se rechazan con el motivo "sala llena", y el 100 % de los participantes que vuelven en
   menos de 30 s recuperan su plaza y su alias.
