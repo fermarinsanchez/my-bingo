@@ -30,6 +30,10 @@ resuelven los detalles.
   (prohibido por la constitución).
 - **Inyección para tests**: el motor recibe una función `randomInt(n)` inyectable para tener
   tests deterministas; la de producción usa `crypto`.
+- **Identificadores**: `createGame` usa `randomUUID()` (`src/core/rng.js`). En HTTPS/localhost
+  delega en `crypto.randomUUID`; en HTTP por IP de LAN (p. ej. `npm run preview -- --host`) esa
+  API no existe (no hay contexto seguro) y se genera el UUID v4 con `getRandomValues`. El
+  sorteo no cambia.
 
 ## R3. Persistencia local
 

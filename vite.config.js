@@ -4,11 +4,18 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'));
 
+// Vite 8 solo refleja CORS a localhost. Sin esto, `preview --host` sirve el HTML
+// al móvil pero bloquea los módulos JS/CSS (pantalla negra en tema oscuro).
+const localOrigin =
+  /^https?:\/\/(?:(?:[^:]+\.)?localhost|127\.\d+\.\d+\.\d+|\[::1\]|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[0-1])\.\d+\.\d+|[a-z0-9-]+(?:\.[a-z0-9-]+)*\.local)(?::\d+)?$/i;
+
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/my-bingo/',
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
   },
+  server: { cors: { origin: localOrigin } },
+  preview: { cors: { origin: localOrigin } },
   plugins: [
     VitePWA({
       // Actualización diferida: nunca recargar en mitad de una partida (research R4).
@@ -54,7 +61,7 @@ export default defineConfig({
     include: ['tests/unit/**/*.test.js'],
     coverage: {
       provider: 'v8',
-      include: ['src/core/**'],
+      include: ['src/core/**', 'src/room/**'],
       reporter: ['text', 'html'],
       thresholds: {
         lines: 90,

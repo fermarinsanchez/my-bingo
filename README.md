@@ -21,15 +21,29 @@ npm ci                 # instalar dependencias
 npm run dev            # servidor de desarrollo
 npm run lint           # ESLint
 npm test               # tests unitarios (lógica del juego e i18n)
-npm run test:coverage  # cobertura; umbral 90 % en src/core
+npm run test:coverage  # cobertura; umbral 90 % en src/core y src/room
 npm run build          # build de producción en dist/
-npm run preview -- --host   # servir dist/ en la red local
+npm run preview -- --host   # dist/ en LAN: http://<IP>:4173/my-bingo/
 npm run check-size     # falla si JS+CSS iniciales (gzip) > 100 KB
 npm run lhci           # Lighthouse CI: Accesibilidad ≥ 90
 ```
 
 Las pruebas manuales en móvil están en
 [specs/001-bombo-bingo-offline/quickstart.md](specs/001-bombo-bingo-offline/quickstart.md).
+
+## Sala compartida (núcleo)
+
+Lógica pura para sincronizar la partida del cantador con hasta 40 espectadores de solo
+lectura. En esta versión **no hay UI ni transporte real**: el núcleo vive en `src/core/room/`
+y `src/room/`, y se valida con un hub en memoria. Ningún módulo de la app lo importa todavía
+(se cargará bajo demanda en una feature posterior).
+
+- Spec, plan y contratos: [specs/002-sala-protocolo-sync/](specs/002-sala-protocolo-sync/)
+- Reproducir una semilla de convergencia:
+
+```bash
+ROOM_SEED=1234 npx vitest run tests/unit/room/convergence.test.js
+```
 
 ## Flujo de trabajo y configuración de GitHub
 

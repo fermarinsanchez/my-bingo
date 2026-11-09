@@ -95,6 +95,6 @@ Solo `@typedef` JSDoc de `HostTransport`, `ParticipantTransport` y `TransportSta
 
 | Export | Firma | Contrato |
 |---|---|---|
-| `createParticipantSession` | `({ transport, clock, alias, participantId? }) => ParticipantSession` | `participantId` por defecto `crypto.randomUUID()`. Conecta `participantStep` con el transporte y el tick. |
+| `createParticipantSession` | `({ transport, clock, alias, participantId? }) => ParticipantSession` | `participantId` por defecto `randomUUID()` (`src/core/rng.js`). Conecta `participantStep` con el transporte y el tick. |
 
 `ParticipantSession`: `getState()`, `subscribe(fn: (state) => void) => () => void`, `leave()`.

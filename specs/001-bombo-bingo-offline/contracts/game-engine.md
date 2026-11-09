@@ -14,6 +14,7 @@ modifican el recibido. Los errores de uso se lanzan como `GameError` con un `cod
 | Export | Firma | Contrato |
 |---|---|---|
 | `randomInt` | `(n: number) => number` | Entero uniforme en `[0, n)`. Usa `crypto.getRandomValues` con muestreo por rechazo. Lanza `RangeError` si `n` no es entero en `1..2^32`. |
+| `randomUUID` | `() => string` | UUID v4. Usa `crypto.randomUUID` en contexto seguro; si no existe (HTTP en IP local), el mismo formato con `crypto.getRandomValues`. Nunca `Math.random`. |
 
 ## `src/core/game.js`
 
@@ -21,7 +22,7 @@ modifican el recibido. Los errores de uso se lanzan como `GameError` con un `cod
 |---|---|---|
 | `TOTAL_BALLS` | `90` | |
 | `INTERVAL_MIN`, `INTERVAL_MAX`, `INTERVAL_DEFAULT` | `3`, `30`, `5` | |
-| `createGame` | `(opts?: { now?: Date, id?: string }) => Game` | `status: 'in-progress'`, `drawn: []`, `mode: 'manual'`, `intervalSec: 5`, `autoPaused: true`, `undoLocked: false`, `prizes: []`. |
+| `createGame` | `(opts?: { now?: Date, id?: string }) => Game` | `id` por defecto `randomUUID()`. `status: 'in-progress'`, `drawn: []`, `mode: 'manual'`, `intervalSec: 5`, `autoPaused: true`, `undoLocked: false`, `prizes: []`. |
 | `drawBall` | `(game: Game, randomInt?: (n) => number) => { game: Game, ball: number }` | Elige `pending[randomInt(pending.length)]` con `pending` ordenado ascendente. Lanza `GameError('no-balls-left')` si no quedan, `GameError('game-finished')` si está terminada. |
 | `undoLastBall` | `(game: Game) => { game: Game, ball: number }` | Requiere `canUndo(game)`; si no, `GameError('undo-not-allowed')`. |
 | `setMode` | `(game, mode: 'manual' \| 'auto') => Game` | Al pasar a `auto`, `autoPaused = false`. Al pasar a `manual`, `autoPaused = true`. |

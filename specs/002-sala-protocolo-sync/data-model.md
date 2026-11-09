@@ -91,7 +91,7 @@ Validación (al decodificar un snapshot): si no se cumple alguna regla, el mensa
 
 | Campo | Tipo | Reglas |
 |---|---|---|
-| `participantId` | string | Generado una vez por sesión (inyectado). |
+| `participantId` | string | Generado una vez por sesión (`randomUUID()`; inyectable). |
 | `alias` | string | El pedido; el saneado definitivo lo confirma el snapshot de bienvenida. |
 | `connection` | ver abajo | |
 | `sync` | `'waiting' \| 'synced' \| 'desynced'` | `waiting` hasta el primer snapshot. |
