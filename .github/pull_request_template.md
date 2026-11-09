@@ -2,10 +2,10 @@
 
 <!-- Historia(s) de usuario y tareas (T0xx) que cubre este PR -->
 
-## Autorrevisión (constitución v1.1.0)
+## Autorrevisión (constitución v2.0.0)
 
 - [ ] **Offline**: probado en un móvil real en **modo avión** tras una primera carga (Principio I y VI)
-- [ ] **Alcance**: solo funcionalidad del bombo de 90 bolas; sin cartones, voz ni multijugador (Principio II)
+- [ ] **Alcance**: solo bombo de 90 bolas; multijugador únicamente como sala de espectadores (solo lectura); sin cartones digitales, reclamar premios desde el móvil del jugador, voz, dinero/apuestas, cuentas ni migración de host (Principio II)
 - [ ] **Integridad**: no se pierden bolas ni partida al cerrar/recargar; acciones destructivas con confirmación (Principio III)
 - [ ] **Tests**: la lógica de `src/core/` tocada tiene tests nuevos o actualizados y pasan (Principio VI)
 - [ ] **Idiomas**: todos los textos nuevos existen en `es` y `gl`

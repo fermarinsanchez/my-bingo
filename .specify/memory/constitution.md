@@ -32,9 +32,8 @@ Plantillas revisadas (no requieren cambios; leen la constitución en tiempo de e
 - ✅ .specify/templates/spec-template.md
 - ✅ .specify/templates/tasks-template.md
 - ✅ .specify/templates/checklist-template.md
-- ⚠ Fuera del alcance de este comando (pendiente de seguimiento manual):
-  .github/pull_request_template.md línea "Alcance" aún dice "sin ... multijugador"; ajustar
-  a "sin cartones digitales ni voz; multijugador solo como espectador".
+- ✅ .github/pull_request_template.md: casilla "Alcance" y encabezado de versión alineados con
+  la v2.0.0 (multijugador solo como sala de espectadores).
 
 TODOs diferidos: ninguno.
 
