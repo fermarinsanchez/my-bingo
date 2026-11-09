@@ -4,6 +4,9 @@ coverage/
 .lighthouseci/
 dev-dist/
 .DS_Store
+Thumbs.db
+*.tmp
+*.swp
 *.log
 .env
 .env.*

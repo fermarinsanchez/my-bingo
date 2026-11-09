@@ -19,6 +19,7 @@ npm test               # Vitest: lógica clave (src/core, src/i18n)
 npm run test:coverage  # cobertura; umbral 90 % en src/core
 npm run build          # build de producción en dist/
 npm run preview -- --host   # servir dist/ en la red local para probar en el móvil
+                           # URL: http://<IP-LAN>:4173/my-bingo/  (Vite imprime Network)
 npm run check-size     # falla si JS+CSS iniciales (gzip) > 100 KB
 npm run lhci           # Lighthouse CI: Accesibilidad ≥ 90
 ```
@@ -27,6 +28,11 @@ Resultado esperado: todos los comandos terminan con código 0.
 
 > El service worker requiere HTTPS salvo en `localhost`. Para probar instalación y offline en el
 > móvil usar el despliegue de GitHub Pages (o un túnel HTTPS).
+>
+> `preview --host` en HTTP por IP local (p. ej. `http://192.168.x.x:4173/my-bingo/`): Vite 8
+> debe reflejar CORS a orígenes de LAN (`vite.config.js` › `server.cors` / `preview.cors`) y
+> los UUID de partida salen de `randomUUID()` en `rng.js`, no de `crypto.randomUUID` (esa API
+> exige contexto seguro). Sin eso la página queda en negro en el móvil (HTML sí, JS no).
 
 ## Escenarios de validación manual (móvil real)
 

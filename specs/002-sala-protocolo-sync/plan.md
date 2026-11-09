@@ -9,7 +9,7 @@
 Lógica pura y testeable para sincronizar una partida del cantador con hasta 40 espectadores
 de solo lectura, sin transporte real. Dos reductores puros (`src/core/room/`): el del
 cantador deduce eventos numerados (`ball`, `undo`, `prize`, `end`) comparando la partida
-anterior con la nueva, sin tocar `src/core/game.js`, y gestiona uniones, alias, reservas de 30 s,
+anterior con la nueva, sin cambiar el modelo de `Game`, y gestiona uniones, alias, reservas de 30 s,
 presencia y latido cada 2 s. El del participante aplica eventos en orden estricto y se
 reconcilia con snapshots idempotentes ante pérdidas, duplicados o desorden. Dos sesiones
 delgadas (`src/room/`) conectan los reductores con una interfaz `Transport` y un reloj
@@ -22,7 +22,8 @@ inyectado. Se prueba con un transporte falso en memoria con fallos reproducibles
 herramientas (igual que la 001).
 
 **Primary Dependencies**: ninguna nueva. Usa APIs estándar: `JSON`, `Intl.Segmenter`,
-`String.prototype.normalize`, `crypto.randomUUID`.
+`String.prototype.normalize`, `randomUUID()` de `src/core/rng.js` (UUID v4; fallback con
+`crypto.getRandomValues` fuera de contexto seguro).
 
 **Storage**: N/A. Todo en memoria (Principio I: sala y alias efímeros).
 
@@ -38,9 +39,11 @@ las dos últimas versiones mayores); `Intl.Segmenter` disponible desde Safari 14
 **Performance Goals**: aplicar un evento o un snapshot < 1 ms; cambio perdido mostrado en
 ≤ 2,5 s con canal sin retraso (SC-003a); suite completa de sala < 10 s en CI.
 
-**Constraints**: sin modificar `src/core/game.js` ni su modelo; reductores sin reloj, timers ni
+**Constraints**: sin cambiar el **modelo** de `Game` (FR-002); reductores sin reloj, timers ni
 transporte; ningún error de sala llega a la partida (FR-030); mensajes ≤ 16 KB; 0 bytes nuevos
 en el bundle inicial (nada lo importa todavía; la UI futura lo cargará con `import()`).
+Parche de la 001 (no es protocolo de sala): `createGame` pasa a `randomUUID()` de `rng.js` y
+Vite refleja CORS a IPs de LAN para que `preview --host` en el móvil no quede en negro.
 
 **Scale/Scope**: 1 cantador, ≤ 40 participantes por sala; snapshot ≤ ~1,5 KB; 6 módulos de
 núcleo, 3 de sesión, ~8 archivos de pruebas.
@@ -53,7 +56,7 @@ núcleo, 3 de sesión, ~8 archivos de pruebas.
 |---|---|---|
 | I. Offline-First Total | La sala es opcional y aislada: las sesiones capturan cualquier error y nunca modifican la partida (FR-030, R12); sala, alias e identidades solo en memoria; sin recursos externos (no hay transporte real en esta feature). | ✅ |
 | II. Alcance acotado | Solo modo espectador: los participantes únicamente envían `join` y `resync`; sin cartones, reclamaciones, cuentas ni migración de host. Transporte real, enlace, QR y UI fuera de esta feature. | ✅ |
-| III. Integridad y persistencia | El cantador sigue siendo la única fuente de verdad; `game.js` y la persistencia de la 001 no cambian; el PRNG con semilla es solo de tests (el sorteo sigue con `crypto.getRandomValues`). | ✅ |
+| III. Integridad y persistencia | El cantador sigue siendo la única fuente de verdad; el modelo y el sorteo de la 001 no cambian (`getRandomValues`). `game.js` solo cambia el origen del `id` (helper `randomUUID`, ver Complexity Tracking). | ✅ |
 | IV. Legibilidad y accesibilidad | Sin UI ni textos visibles en esta feature; los motivos de rechazo son códigos que la feature de UI traducirá a es/gl. | ✅ (N/A) |
 | V. Simplicidad y web estándar | 0 dependencias nuevas (la única permitida para transporte queda libre para la feature de transporte real); interfaz `Transport` intercambiable; protocolo puro e independiente del DOM y del transporte; carga bajo demanda prevista vía `import()`. | ✅ |
 | VI. Tests en lógica clave | Pruebas de snapshot, duplicados, perdidos, desordenados, versión incompatible, límite de 40 y alias saneado (quickstart, escenarios 2-6); cobertura ≥ 90 % en CI. Verificación manual en móvil real en modo avión de la app existente antes de fusionar (T044): esta feature no debe alterarla. | ✅ |
@@ -87,7 +90,7 @@ specs/002-sala-protocolo-sync/
 ```text
 src/
 ├── core/
-│   ├── game.js                 # SIN CAMBIOS (feature 001)
+│   ├── game.js                 # 001: solo `id` vía `randomUUID()` (LAN HTTP)
 │   └── room/                   # PURO: sin DOM, reloj, timers ni transporte
 │       ├── constants.js        # versión, límites y tiempos
 │       ├── alias.js            # sanitizeAlias
@@ -124,3 +127,9 @@ por la cobertura. Los soportes de prueba (`tests/support/`) no se publican. Ning
 ## Complexity Tracking
 
 Sin violaciones de la constitución que justificar.
+
+**Parche 001 (T044, preview en móvil):** `crypto.randomUUID` y el CORS por defecto de Vite 8
+fallan en `http://192.168.x.x` (no es contexto seguro; CORS solo localhost). No es alcance de
+sala: no hay transporte real ni UI. Se documenta aquí porque T044 usa ese preview y porque
+`game.js` queda con un diff mínimo respecto a `main` (`id = randomUUID()`). El test T038
+sigue exigiendo `errors.js` intacto y, en `game.js`, solo ese cambio de identificador.

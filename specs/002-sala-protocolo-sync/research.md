@@ -39,8 +39,8 @@ siguen vigentes.
   | Solo cambian `mode`, `intervalSec`, `autoPaused` o `undoLocked` | ninguno |
   | Cualquier otra combinación | `snapshot` (salvaguarda) |
 
-- **Rationale**: FR-002 prohíbe tocar `game.js`. El store de la UI ya notifica cada estado
-  nuevo (`subscribe`), así que la sala solo necesita el estado previo. La salvaguarda
+- **Rationale**: FR-002 prohíbe cambiar el modelo de `Game`. El store de la UI ya notifica cada
+  estado nuevo (`subscribe`), así que la sala solo necesita el estado previo. La salvaguarda
   garantiza la convergencia aunque una futura acción cambie varias cosas a la vez.
 - **Alternatives considered**: envolver las funciones de `game.js` para emitir eventos
   (acopla sala y motor, y se rompe si se añade una acción nueva); emitir siempre snapshot
@@ -119,12 +119,12 @@ siguen vigentes.
 
 ## R8. Identidad del participante y conexiones
 
-- **Decision**: el participante genera un `participantId` aleatorio (`crypto.randomUUID()`,
-  inyectado en el núcleo) que vive solo en memoria y va en `join`. El transporte identifica
-  cada conexión con un `peerId` opaco. El cantador mantiene `participantId → { alias, peerId,
-  status: 'connected' | 'reserved', reservedUntil }`. Si llega un `join` con un `participantId`
-  conocido desde otro `peerId`, este sustituye al anterior (FR-012). Los `participantId` nunca
-  se envían a otros participantes.
+- **Decision**: el participante genera un `participantId` aleatorio (`randomUUID()` de
+  `src/core/rng.js`, inyectado en el núcleo) que vive solo en memoria y va en `join`. El
+  transporte identifica cada conexión con un `peerId` opaco. El cantador mantiene
+  `participantId → { alias, peerId, status: 'connected' | 'reserved', reservedUntil }`. Si
+  llega un `join` con un `participantId` conocido desde otro `peerId`, este sustituye al
+  anterior (FR-012). Los `participantId` nunca se envían a otros participantes.
 - **Rationale**: separa "quién es" de "por dónde llega", que es justo lo que pide la reconexión
   con reserva de 30 s. Como el id no se difunde (presencia solo con el número), no se puede
   suplantar a otro participante a partir de los mensajes.

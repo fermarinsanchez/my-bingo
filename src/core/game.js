@@ -1,6 +1,6 @@
 // @ts-check
 import { GameError } from './errors.js';
-import { randomInt as rngRandomInt } from './rng.js';
+import { randomInt as rngRandomInt, randomUUID } from './rng.js';
 
 export const TOTAL_BALLS = 90;
 export const INTERVAL_MIN = 3;
@@ -34,7 +34,7 @@ export const INTERVAL_DEFAULT = 5;
  * @param {{ now?: Date, id?: string }} [opts]
  * @returns {Game}
  */
-export function createGame({ now = new Date(), id = crypto.randomUUID() } = {}) {
+export function createGame({ now = new Date(), id = randomUUID() } = {}) {
   return {
     id,
     startedAt: now.toISOString(),

@@ -14,7 +14,10 @@ Esta feature amplía [001-bombo-bingo-offline](../001-bombo-bingo-offline/spec.m
 su contenido. La partida (bolas salidas en orden, premios, estado en curso/terminada, deshacer)
 se rige por el motor existente descrito en
 [contracts/game-engine.md](../001-bombo-bingo-offline/contracts/game-engine.md)
-(`src/core/game.js`), que esta feature **lee pero no modifica**.
+(`src/core/game.js`), que esta feature **lee pero no modifica** (modelo, sorteo, deshacer,
+premios, persistencia). Un parche de preview en LAN de la 001 (CORS de Vite y `randomUUID()`
+para HTTP) no es protocolo de sala: está en el plan de esta feature y en el motor/quickstart
+de la 001.
 
 Aquí solo se especifican las **reglas de sincronización** entre el dispositivo del cantador y
 los de los participantes, como lógica pura verificable con un canal simulado. El transporte
@@ -39,6 +42,9 @@ real, el enlace para unirse, el QR y cualquier pantalla quedan para features pos
 - Q: Si la app del cantador se cierra o recarga y la sala desaparece, ¿qué pasa con los
   participantes? → A: Si al reintentar unirse la sala ya no existe, o tras 5 minutos seguidos
   en "cantador desconectado", el participante pasa a "sala no disponible" y deja de reintentar.
+- Q: ¿CORS de preview y el fallback de UUID en HTTP forman parte de esta spec? → A: No. No
+  cambian historias ni reglas de sala. El modelo de `Game` sigue igual. Se documentan en
+  [plan.md](./plan.md) (Complexity Tracking), T038/T044 y en el motor/quickstart de la 001.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -210,7 +216,9 @@ lista de alias y el contador del cantador, y el contador de los participantes, s
 - **FR-001**: El cantador MUST poder abrir una sala para la partida en curso. Abrir la sala
   MUST NOT modificar la partida.
 - **FR-002**: La sala MUST derivar todo lo que comparte del estado de la partida del motor
-  existente (`src/core/game.js`), sin modificar ese motor ni su modelo de datos.
+  existente (`src/core/game.js`), sin modificar ese modelo de datos ni las reglas de sorteo,
+  deshacer, premios o persistencia. El origen del `id` de partida (`randomUUID()` en `rng.js`)
+  es un parche de preview de la 001, no un cambio de modelo.
 - **FR-003**: Cada cambio de la partida relevante para los espectadores MUST emitirse como un
   evento: bola sacada (`ball`), última bola deshecha (`undo`), premio concedido (`prize`) y
   partida terminada (`end` con alcance `game`). Empezar una partida nueva con la sala abierta

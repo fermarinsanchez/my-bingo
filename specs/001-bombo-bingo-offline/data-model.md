@@ -15,7 +15,7 @@ Convención: una **posición** es el índice 1-based de una bola en el orden de 
 
 | Campo | Tipo | Reglas |
 |---|---|---|
-| `id` | string | Identificador único de la partida (p. ej. `crypto.randomUUID()`). |
+| `id` | string | Identificador único de la partida (UUID v4 vía `randomUUID()` en `rng.js`). |
 | `startedAt` | string ISO 8601 | Fecha/hora de creación. |
 | `status` | `'in-progress' \| 'finished'` | Ver transiciones. |
 | `drawn` | number[] | Bolas salidas en orden. Enteros 1-90, **sin duplicados**, longitud 0-90. |

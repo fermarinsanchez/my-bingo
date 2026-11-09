@@ -61,3 +61,9 @@ criterios que cubre.
 ## Resultado esperado
 
 Todas las pruebas en verde, cobertura ≥ 90 % y `check-size` sin cambios respecto a `main`.
+
+## Smoke T044 (app 001, no es protocolo)
+
+`npm run build && npm run preview -- --host` y abrir `http://<IP>:4173/my-bingo/` en el móvil
+(detalle CORS/UUID en el [quickstart de la 001](../001-bombo-bingo-offline/quickstart.md)).
+Esta feature no añade cantador ni jugadores en red.

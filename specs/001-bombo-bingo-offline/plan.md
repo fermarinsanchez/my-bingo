@@ -86,7 +86,7 @@ specs/001-bombo-bingo-offline/
 
 ```text
 index.html                    # Shell de la SPA (vistas, <dialog>, meta theme-color)
-vite.config.js                # base = BASE_PATH, VitePWA (manifest, workbox, prompt)
+vite.config.js                # base, VitePWA, CORS LAN para `preview --host`
 eslint.config.js
 package.json                  # scripts: dev, build, preview, lint, test, test:coverage,
                               #          check-size, lhci
@@ -101,7 +101,7 @@ src/
 ├── main.js                   # arranque: prefs, i18n, tema, recuperación, registro SW
 ├── core/                     # PURO: sin DOM, sin storage, sin timers (contracts/game-engine.md)
 │   ├── errors.js             # GameError
-│   ├── rng.js                # randomInt con crypto + rechazo
+│   ├── rng.js                # randomInt + randomUUID (HTTP LAN sin contexto seguro)
 │   ├── game.js               # Game inmutable: draw, undo, modos, premios, derivados
 │   ├── checker.js            # validateEntry, toggleNumber, countStatus, checkClaim
 │   └── storage.js            # serialize/parse/migrate de Game y Preferences
